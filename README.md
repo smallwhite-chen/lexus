@@ -11,10 +11,11 @@ Lexus 官網車款介紹頁線框（wireframe）原型，採用 **Lexus 官網 W
 
 > `index.html` 為主頁面（NX 車款介紹）。
 
-## 重要：`.nojekyll`
+## 重要：避免 Jekyll 忽略資料夾
 
-本專案的設計系統放在 `_ds/` 資料夾，**底線開頭的資料夾預設會被 GitHub Pages 的 Jekyll 忽略**，導致樣式失效。
-根目錄已附帶一個空白的 **`.nojekyll`** 檔案來關閉 Jekyll 處理 — 推送時請務必保留它（含隱藏檔）。
+GitHub Pages 預設會用 Jekyll 處理網站，**底線開頭的檔案／資料夾會被忽略**。
+為避免樣式失效，設計系統資料夾已命名為 `ds/`（不含底線），可正常載入。
+根目錄另附帶一個空白的 **`.nojekyll`** 檔案作為雙保險 — 推送時請盡量保留（含隱藏檔）。
 
 ## 檔案結構
 
@@ -22,8 +23,8 @@ Lexus 官網車款介紹頁線框（wireframe）原型，採用 **Lexus 官網 W
 .
 ├── index.html                          # 主頁面（NX 車款介紹）
 ├── NX Wireframe - 重點段落版面探索.html   # 版面探索版本
-├── .nojekyll                           # 關閉 Jekyll（務必保留）
-├── _ds/                                # Lexus 官網 WF 設計系統（樣式 token / 元件 / RWD）
+├── .nojekyll                           # 關閉 Jekyll（雙保險）
+├── ds/                                 # Lexus 官網 WF 設計系統（樣式 token / 元件 / RWD）
 └── nx-assets/                          # 本頁的 CSS 與互動腳本
 ```
 
