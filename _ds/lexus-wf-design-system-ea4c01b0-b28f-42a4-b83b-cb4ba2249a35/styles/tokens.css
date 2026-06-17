@@ -1,0 +1,169 @@
+/* ============================================================
+   LEXUS WIREFRAME · DESIGN TOKENS
+   乾淨灰階線框 · 深藍灰強調 · 中英混排
+   ============================================================ */
+
+/* ---- Fonts ------------------------------------------------ */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Sans+TC:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* — Type — */
+  --wf-sans: 'IBM Plex Sans', 'IBM Plex Sans TC', system-ui, -apple-system, sans-serif; /* @kind font */
+  --wf-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace; /* @kind font */
+
+  /* — Neutral palette (cool grayscale) — */
+  --wf-paper:       #ffffff;   /* canvas surface            */
+  --wf-stage:       #d8dce1;   /* area outside the canvas   */
+  --wf-ink:         #20242a;   /* primary text / strong line*/
+  --wf-ink-2:       #565d66;   /* secondary text            */
+  --wf-muted:       #8a9199;   /* tertiary / mono labels    */
+  --wf-faint:       #aab0b8;   /* faint hint text           */
+
+  /* — Lines & fills — */
+  --wf-line:        #cdd2d8;   /* default border            */
+  --wf-line-2:      #e3e6ea;   /* subtle divider            */
+  --wf-line-strong: #9aa1a9;   /* emphasised border         */
+  --wf-fill:        #eceef1;   /* placeholder fill base     */
+  --wf-fill-2:      #e1e4e8;   /* nested placeholder        */
+  --wf-fill-dark:   #2a2f36;   /* dark placeholder surface  */
+
+  /* — Accent: deep blue-grey (Lexus-leaning) — */
+  --wf-accent:      #2b3b50;
+  --wf-accent-700:  #213040;
+  --wf-accent-soft: #e7ecf2;
+  --wf-accent-line: #b9c4d2;
+  --wf-on-accent:   #ffffff;
+
+  /* — Spacing scale (4px base) — */
+  --wf-1: 4px;  --wf-2: 8px;  --wf-3: 12px; --wf-4: 16px;
+  --wf-5: 24px; --wf-6: 32px; --wf-7: 48px; --wf-8: 64px; --wf-9: 96px;
+
+  /* — Radius (wireframes stay mostly square) — */
+  --wf-r-sm: 2px; --wf-r:   3px; --wf-r-lg: 6px; --wf-r-pill: 999px;
+
+  /* — Misc — */
+  --wf-maxw: 1200px;
+
+  /* — Breakpoints (RWD) — mobile-first; values match the design spec — */
+  --wf-bp-md: 768px;   /* @kind other */ /* ≥768  → 平板 Tablet  (md:) */
+  --wf-bp-lg: 1024px;  /* @kind other */ /* ≥1024 → 桌機 Desktop (lg:) */
+}
+
+/* ---- Reset ------------------------------------------------ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--wf-sans);
+  color: var(--wf-ink);
+  background: var(--wf-stage);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img { display: block; max-width: 100%; }
+button { font-family: inherit; }
+a { color: inherit; text-decoration: none; }
+
+/* ============================================================
+   STAGE & CANVAS  (device-frame switching lives here)
+   ============================================================ */
+.wf-stage {
+  min-height: 100vh;
+  width: 100%;
+  background:
+    linear-gradient(var(--wf-stage), var(--wf-stage));
+  padding: 56px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* device badge floating above the canvas */
+.wf-devicebar {
+  position: fixed;
+  top: 14px; left: 50%; transform: translateX(-50%);
+  z-index: 40;
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 6px 14px;
+  background: var(--wf-ink);
+  color: #fff;
+  border-radius: var(--wf-r-pill);
+  font-family: var(--wf-mono);
+  font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+  box-shadow: 0 6px 20px rgba(0,0,0,.22);
+}
+.wf-devicebar b { font-weight: 600; }
+.wf-devicebar span { color: var(--wf-faint); font-weight: 400; }
+.wf-devicebar .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--wf-accent-line); }
+
+.wf-canvas {
+  width: 1440px;
+  background: var(--wf-paper);
+  box-shadow: 0 1px 0 var(--wf-line-2), 0 24px 60px -20px rgba(20,24,30,.28);
+  border: 1px solid var(--wf-line);
+  overflow: hidden;
+  transition: width .28s cubic-bezier(.4,0,.1,1);
+}
+
+/* ============================================================
+   TYPOGRAPHY HELPERS
+   ============================================================ */
+.wf-eyebrow {            /* EN mono kicker */
+  font-family: var(--wf-mono);
+  font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--wf-muted);
+}
+.wf-anno {               /* annotation / spec note */
+  font-family: var(--wf-mono);
+  font-size: 11px; line-height: 1.5; letter-spacing: .02em;
+  color: var(--wf-muted);
+}
+.wf-h1 { font-size: 44px; font-weight: 600; letter-spacing: -.01em; line-height: 1.05; margin: 0; }
+.wf-h2 { font-size: 30px; font-weight: 600; letter-spacing: -.005em; line-height: 1.1; margin: 0; }
+.wf-h3 { font-size: 20px; font-weight: 600; line-height: 1.2; margin: 0; }
+.wf-body { font-size: 15px; line-height: 1.65; color: var(--wf-ink-2); margin: 0; }
+.wf-small { font-size: 13px; line-height: 1.5; color: var(--wf-ink-2); }
+
+/* ============================================================
+   IMAGE PLACEHOLDER  (hatch + X + mono label)
+   ============================================================ */
+.wf-img {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  background-color: var(--wf-fill);
+  background-image:
+    linear-gradient(to top right, transparent calc(50% - .6px), var(--wf-line-strong) 50%, transparent calc(50% + .6px)),
+    linear-gradient(to bottom right, transparent calc(50% - .6px), var(--wf-line-strong) 50%, transparent calc(50% + .6px));
+  border: 1px solid var(--wf-line-strong);
+  color: var(--wf-muted);
+  overflow: hidden;
+  min-height: 64px;
+}
+.wf-img--plain {          /* no X, just hatch — for subtle slots */
+  background-image:
+    repeating-linear-gradient(45deg, transparent 0 9px, rgba(154,161,169,.16) 9px 10px);
+}
+.wf-img--dark {
+  background-color: var(--wf-fill-dark);
+  color: #c4cad2;
+  border-color: #3a4047;
+  background-image:
+    linear-gradient(to top right, transparent calc(50% - .6px), #454b53 50%, transparent calc(50% + .6px)),
+    linear-gradient(to bottom right, transparent calc(50% - .6px), #454b53 50%, transparent calc(50% + .6px));
+}
+.wf-img__label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--wf-mono);
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  background: var(--wf-paper);
+  color: var(--wf-ink-2);
+  border: 1px solid var(--wf-line);
+  padding: 4px 10px;
+  border-radius: var(--wf-r);
+  white-space: nowrap;
+}
+.wf-img--dark .wf-img__label {
+  background: rgba(20,24,30,.7);
+  color: #d4d9df;
+  border-color: #454b53;
+}

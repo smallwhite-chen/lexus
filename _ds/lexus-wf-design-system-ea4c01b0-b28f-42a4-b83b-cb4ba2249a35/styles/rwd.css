@@ -1,0 +1,60 @@
+/* ============================================================
+   LEXUS WIREFRAME · RWD / RESPONSIVE
+   Mobile-first 斷點規範。基準樣式 = 手機（無前綴）；往上以
+   min-width 疊加。對應設計規範：
+     · 手機 Mobile   < 768px            基準樣式（不需前綴）
+     · 平板 Tablet   768px – 1023px     md:  (≥768px)
+     · 桌機 Desktop  ≥ 1024px           lg:  (≥1024px)
+
+   兩種觸發來源（效果一致）：
+   1) 固定畫布預覽：.wf-canvas[data-device="mobile|tablet|desktop"]
+      —— 在 1440 畫布內模擬各裝置，不受瀏覽器實際寬度影響。
+      代表寬度：手機 390 · 平板 834 · 桌機 1440。
+   2) 真實 RWD 頁面：下列 @media (min-width:…) 規則。
+   ============================================================ */
+
+/* ---- Responsive visibility utilities ---------------------- */
+/* 真實視窗（production）：mobile-first，往上顯示 */
+.wf-only-tablet,
+.wf-only-desktop { display: none; }
+.wf-only-mobile  { display: revert; }
+
+@media (min-width: 768px) {           /* md: 平板以上 */
+  .wf-only-mobile { display: none; }
+  .wf-only-tablet { display: revert; }
+}
+@media (min-width: 1024px) {          /* lg: 桌機 */
+  .wf-only-tablet  { display: none; }
+  .wf-only-desktop { display: revert; }
+  .wf-hide-desktop { display: none; }
+}
+@media (max-width: 767.98px) { .wf-hide-mobile { display: none; } }
+
+/* 固定畫布（wireframe 預覽）：以 data-device 覆寫，確保畫布內
+   切換裝置時 visibility utilities 也正確（不依賴瀏覽器寬度） */
+.wf-canvas[data-device="mobile"]  .wf-only-mobile  { display: revert !important; }
+.wf-canvas[data-device="mobile"]  .wf-only-tablet,
+.wf-canvas[data-device="mobile"]  .wf-only-desktop { display: none !important; }
+.wf-canvas[data-device="mobile"]  .wf-hide-mobile  { display: none !important; }
+
+.wf-canvas[data-device="tablet"]  .wf-only-tablet  { display: revert !important; }
+.wf-canvas[data-device="tablet"]  .wf-only-mobile,
+.wf-canvas[data-device="tablet"]  .wf-only-desktop { display: none !important; }
+
+.wf-canvas[data-device="desktop"] .wf-only-desktop { display: revert !important; }
+.wf-canvas[data-device="desktop"] .wf-only-mobile,
+.wf-canvas[data-device="desktop"] .wf-only-tablet  { display: none !important; }
+.wf-canvas[data-device="desktop"] .wf-hide-desktop { display: none !important; }
+
+/* ---- Real-viewport reflow for layout primitives ----------- */
+/* 供「不包在固定畫布內」的真實 RWD 頁面使用。畫布內的重排已由
+   components.css 的 .wf-canvas[data-device] 規則負責，兩者不衝突。*/
+.wf-rwd .wf-grid-3,
+.wf-rwd .wf-grid-2 { grid-template-columns: 1fr; }           /* 手機：單欄 */
+@media (min-width: 768px) {
+  .wf-rwd .wf-grid-3,
+  .wf-rwd .wf-grid-2 { grid-template-columns: repeat(2, 1fr); } /* 平板：兩欄 */
+}
+@media (min-width: 1024px) {
+  .wf-rwd .wf-grid-3 { grid-template-columns: repeat(3, 1fr); } /* 桌機：三欄 */
+}

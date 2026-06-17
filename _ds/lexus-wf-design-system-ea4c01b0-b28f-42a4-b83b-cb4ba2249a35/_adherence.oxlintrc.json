@@ -1,0 +1,288 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/cards/**",
+              "components/content/**",
+              "components/core/**",
+              "components/navigation/**",
+              "tweaks-panel.jsx"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:IBM Plex Mono|IBM Plex Sans|IBM Plex Sans TC))/i]",
+        "message": "Font not provided by the design system. Available: IBM Plex Mono, IBM Plex Sans, IBM Plex Sans TC."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Arrows'] > JSXAttribute > JSXIdentifier[name!=/^(?:onPrev|onNext|key|ref|className|style|children)$/]",
+        "message": "<Arrows> doesn't accept that prop. Declared props: onPrev, onNext."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|size|block|arrow|children|key|ref|className|style|children)$/]",
+        "message": "<Button> doesn't accept that prop. Declared props: variant, size, block, arrow, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primary|secondary|ghost|film)$/]",
+        "message": "<Button> variant must be one of 'primary' | 'secondary' | 'ghost' | 'film'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:sm)$/]",
+        "message": "<Button> size must be one of 'sm'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Dots'] > JSXAttribute > JSXIdentifier[name!=/^(?:count|current|key|ref|className|style|children)$/]",
+        "message": "<Dots> doesn't accept that prop. Declared props: count, current."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Footer'] > JSXAttribute > JSXIdentifier[name!=/^(?:wordmark|models|links|legal|copy|key|ref|className|style|children)$/]",
+        "message": "<Footer> doesn't accept that prop. Declared props: wordmark, models, links, legal, copy."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Header'] > JSXAttribute > JSXIdentifier[name!=/^(?:logo|nav|current|actions|key|ref|className|style|children)$/]",
+        "message": "<Header> doesn't accept that prop. Declared props: logo, nav, current, actions."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ImagePlaceholder'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|variant|ratio|key|ref|className|style|children)$/]",
+        "message": "<ImagePlaceholder> doesn't accept that prop. Declared props: label, variant, ratio."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ImagePlaceholder'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:dark|plain)$/]",
+        "message": "<ImagePlaceholder> variant must be one of 'dark' | 'plain'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ModelCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:name|spec|mediaLabel|cta|onCta|key|ref|className|style|children)$/]",
+        "message": "<ModelCard> doesn't accept that prop. Declared props: name, spec, mediaLabel, cta, onCta."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='NewsCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:tag|date|title|mediaLabel|key|ref|className|style|children)$/]",
+        "message": "<NewsCard> doesn't accept that prop. Declared props: tag, date, title, mediaLabel."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SectionTitle'] > JSXAttribute > JSXIdentifier[name!=/^(?:word|outline|sub|cn|key|ref|className|style|children)$/]",
+        "message": "<SectionTitle> doesn't accept that prop. Declared props: word, outline, sub, cn."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Select'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|key|ref|className|style|children)$/]",
+        "message": "<Select> doesn't accept that prop. Declared props: label."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SpecTable'] > JSXAttribute > JSXIdentifier[name!=/^(?:tabs|selectedTab|onSelectTab|columns|rows|collapsible|key|ref|className|style|children)$/]",
+        "message": "<SpecTable> doesn't accept that prop. Declared props: tabs, selectedTab, onSelectTab, columns, rows, collapsible."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatTile'] > JSXAttribute > JSXIdentifier[name!=/^(?:icon|label|value|note|key|ref|className|style|children)$/]",
+        "message": "<StatTile> doesn't accept that prop. Declared props: icon, label, value, note."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Swatches'] > JSXAttribute > JSXIdentifier[name!=/^(?:colors|current|onSelect|key|ref|className|style|children)$/]",
+        "message": "<Swatches> doesn't accept that prop. Declared props: colors, current, onSelect."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TabRail'] > JSXAttribute > JSXIdentifier[name!=/^(?:items|selected|onSelect|key|ref|className|style|children)$/]",
+        "message": "<TabRail> doesn't accept that prop. Declared props: items, selected, onSelect."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Tabs'] > JSXAttribute > JSXIdentifier[name!=/^(?:items|selected|onSelect|key|ref|className|style|children)$/]",
+        "message": "<Tabs> doesn't accept that prop. Declared props: items, selected, onSelect."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Tag'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|children|key|ref|className|style|children)$/]",
+        "message": "<Tag> doesn't accept that prop. Declared props: variant, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Tag'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:solid|ink)$/]",
+        "message": "<Tag> variant must be one of 'solid' | 'ink'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TextLink'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|key|ref|className|style|children)$/]",
+        "message": "<TextLink> doesn't accept that prop. Declared props: children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Toggle'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|key|ref|className|style|children)$/]",
+        "message": "<Toggle> doesn't accept that prop. Declared props: label."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Wordmark'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|size|key|ref|className|style|children)$/]",
+        "message": "<Wordmark> doesn't accept that prop. Declared props: children, size."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {
+      "Arrows": {
+        "replaces": []
+      },
+      "Button": {
+        "replaces": []
+      },
+      "Dots": {
+        "replaces": []
+      },
+      "Footer": {
+        "replaces": []
+      },
+      "Header": {
+        "replaces": []
+      },
+      "ImagePlaceholder": {
+        "replaces": []
+      },
+      "ModelCard": {
+        "replaces": []
+      },
+      "NewsCard": {
+        "replaces": []
+      },
+      "SectionTitle": {
+        "replaces": []
+      },
+      "Select": {
+        "replaces": []
+      },
+      "SpecTable": {
+        "replaces": []
+      },
+      "StatTile": {
+        "replaces": []
+      },
+      "Swatches": {
+        "replaces": []
+      },
+      "TabRail": {
+        "replaces": []
+      },
+      "Tabs": {
+        "replaces": []
+      },
+      "Tag": {
+        "replaces": []
+      },
+      "TextLink": {
+        "replaces": []
+      },
+      "Toggle": {
+        "replaces": []
+      },
+      "Wordmark": {
+        "replaces": []
+      }
+    },
+    "tokens": [
+      "--wf-1",
+      "--wf-2",
+      "--wf-3",
+      "--wf-4",
+      "--wf-5",
+      "--wf-6",
+      "--wf-7",
+      "--wf-8",
+      "--wf-9",
+      "--wf-accent",
+      "--wf-accent-700",
+      "--wf-accent-line",
+      "--wf-accent-soft",
+      "--wf-bp-lg",
+      "--wf-bp-md",
+      "--wf-faint",
+      "--wf-fill",
+      "--wf-fill-2",
+      "--wf-fill-dark",
+      "--wf-ink",
+      "--wf-ink-2",
+      "--wf-line",
+      "--wf-line-2",
+      "--wf-line-strong",
+      "--wf-maxw",
+      "--wf-mono",
+      "--wf-muted",
+      "--wf-on-accent",
+      "--wf-paper",
+      "--wf-r",
+      "--wf-r-lg",
+      "--wf-r-pill",
+      "--wf-r-sm",
+      "--wf-sans",
+      "--wf-stage"
+    ],
+    "tokenKinds": {
+      "--wf-sans": "font",
+      "--wf-mono": "font",
+      "--wf-paper": "color",
+      "--wf-stage": "color",
+      "--wf-ink": "color",
+      "--wf-ink-2": "color",
+      "--wf-muted": "color",
+      "--wf-faint": "color",
+      "--wf-line": "color",
+      "--wf-line-2": "color",
+      "--wf-line-strong": "color",
+      "--wf-fill": "color",
+      "--wf-fill-2": "color",
+      "--wf-fill-dark": "color",
+      "--wf-accent": "color",
+      "--wf-accent-700": "color",
+      "--wf-accent-soft": "color",
+      "--wf-accent-line": "color",
+      "--wf-on-accent": "color",
+      "--wf-1": "spacing",
+      "--wf-2": "spacing",
+      "--wf-3": "spacing",
+      "--wf-4": "spacing",
+      "--wf-5": "spacing",
+      "--wf-6": "spacing",
+      "--wf-7": "spacing",
+      "--wf-8": "spacing",
+      "--wf-9": "spacing",
+      "--wf-r-sm": "spacing",
+      "--wf-r": "spacing",
+      "--wf-r-lg": "spacing",
+      "--wf-r-pill": "spacing",
+      "--wf-maxw": "spacing",
+      "--wf-bp-md": "other",
+      "--wf-bp-lg": "other"
+    },
+    "fontFamilies": [
+      "IBM Plex Mono",
+      "IBM Plex Sans",
+      "IBM Plex Sans TC"
+    ]
+  }
+}
