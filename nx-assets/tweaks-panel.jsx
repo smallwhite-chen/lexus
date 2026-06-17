@@ -264,7 +264,24 @@ function TweaksPanel({ title = 'Tweaks', children }) {
     window.addEventListener('mouseup', up);
   };
 
-  if (!open) return null;
+  if (!open) {
+    // Standalone (e.g. GitHub Pages, opened top-level): no editor host to toggle
+    // the panel, so render our own launcher. Inside the editor the page is iframed
+    // (window.parent !== window), so this stays hidden and the host controls it.
+    if (typeof window !== 'undefined' && window.parent === window) {
+      return (
+        <button onClick={() => setOpen(true)} aria-label="Open Tweaks"
+          style={{ position: 'fixed', right: 16, bottom: 16, zIndex: 2147483647,
+            font: "500 12px/1 'IBM Plex Mono', ui-monospace, monospace", letterSpacing: '.12em',
+            textTransform: 'uppercase', color: '#fff', background: '#2B3B50',
+            border: 'none', borderRadius: '3px', padding: '11px 16px', cursor: 'pointer',
+            boxShadow: '0 6px 22px rgba(0,0,0,.22)' }}>
+          Tweaks
+        </button>
+      );
+    }
+    return null;
+  }
   return (
     <>
       <style>{__TWEAKS_STYLE}</style>
