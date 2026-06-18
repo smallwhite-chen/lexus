@@ -1,0 +1,225 @@
+/* ============================================================
+   NX 賞車選擇器 · Configurator（取代 360）
+   合併備註：本檔與 nx-configurator.js 自成一組，
+   車款頁只需放一個 <div id="nx-selector"></div> 並呼叫
+   NXConfigurator.renderEntry('#nx-selector') 即可掛載。
+   全部使用 DS token，命名前綴 nxc-（避免與 nx- 衝突）。
+   ============================================================ */
+
+/* ---- 原型定位說明（合併後可移除）------------------------ */
+.nxc-spec-note { display: flex; align-items: baseline; gap: 12px; padding: 11px 14px; border: 1px dashed var(--wf-line-strong);
+  border-radius: var(--wf-r); background: var(--wf-paper); font-size: 12px; line-height: 1.6; color: var(--wf-ink-2); }
+.nxc-spec-note .wf-eyebrow { flex: 0 0 auto; }
+
+/* ---- 車款頁入口卡（車圖 + 置中色票 + 色名）-------------- */
+.nxc-entry { display: flex; flex-direction: column; gap: 18px; max-width: 760px; margin: 0 auto; }
+.nxc-entry__stage { display: flex; flex-direction: column; gap: 12px; }
+.nxc-entry__picker { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.nxc-entry__picker .nxc-swatches { justify-content: center; }
+.nxc-entry__cname { font-size: 16px; color: var(--wf-ink); text-align: center; }
+.nxc-entry__cspec { font-size: 12px; line-height: 1.5; color: var(--wf-ink-2); text-align: center; max-width: 420px; }
+/* 入口色票：每列 5 個、共兩列、方塊自動拉寬 */
+.nxc-entry__picker { width: 100%; padding: 0 18px; }
+.nxc-entry__picker .nxc-swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px 12px; width: 100%; }
+.nxc-entry__picker .nxc-sw { width: auto; }
+.nxc-entry__picker .nxc-sw__dot { width: 100%; height: 34px; }
+.nxc-entry__picker .nxc-sw[aria-selected="true"] .nxc-sw__dot { box-shadow: 0 0 0 2px var(--wf-paper), 0 0 0 3px var(--wf-accent); }
+.nxc-entry__cta { display: flex; justify-content: center; margin-top: 2px; }
+
+/* 舞台（共用：入口卡 + overlay）---------------------------- */
+.nxc-stage-wrap { display: flex; flex-direction: column; gap: 10px; }
+.nxc-canvas { position: relative; width: 100%; aspect-ratio: 16/10; }
+.nxc-canvas .wf-img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.nxc-fade { animation: nxc-fade .28s ease; }
+@keyframes nxc-fade { from { opacity: .25; } to { opacity: 1; } }
+.nxc-stage__badge { position: absolute; top: 12px; left: 12px; z-index: 3; display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--wf-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  background: var(--wf-paper); color: var(--wf-ink-2); border: 1px solid var(--wf-line); padding: 4px 9px; border-radius: var(--wf-r); white-space: nowrap; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; }
+.nxc-stage__badge.is-fallback { color: var(--wf-accent); border-color: var(--wf-accent-line); background: var(--wf-accent-soft); }
+.nxc-stage__zoom { position: absolute; bottom: 12px; right: 12px; z-index: 3; display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--wf-mono); font-size: 10px; letter-spacing: .1em; color: var(--wf-ink-2);
+  background: var(--wf-paper); border: 1px solid var(--wf-line); padding: 4px 9px; border-radius: var(--wf-r-pill); cursor: pointer; }
+.nxc-stage__zoom .ic { font-size: 12px; }
+
+/* 360 拖曳旋轉 */
+.nxc-canvas .wf-img[data-stageimg] { cursor: grab; touch-action: pan-y; user-select: none; }
+.nxc-canvas .wf-img.is-drag { cursor: grabbing; }
+.nxc-stage__hint { position: absolute; top: 12px; right: 12px; z-index: 3; display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--wf-mono); font-size: 10px; letter-spacing: .1em; color: var(--wf-ink-2);
+  background: var(--wf-paper); border: 1px solid var(--wf-line); padding: 4px 9px; border-radius: var(--wf-r-pill); pointer-events: none; }
+.nxc-stage__hint .ic { font-size: 12px; }
+.nxc-framecount { position: absolute; bottom: 12px; left: 12px; z-index: 3; font-family: var(--wf-mono); font-size: 10px; letter-spacing: .1em;
+  color: var(--wf-ink-2); background: var(--wf-paper); border: 1px solid var(--wf-line); padding: 4px 9px; border-radius: var(--wf-r); pointer-events: none; }
+
+/* 旋轉刻度軸（取代角度按鈕）*/
+.nxc-scrub { padding: 4px 6px 2px; }
+.nxc-scrub__track { position: relative; height: 18px; display: flex; align-items: center; cursor: pointer; touch-action: none; }
+.nxc-scrub__line { position: absolute; left: 0; right: 0; height: 2px; background: var(--wf-line); border-radius: 2px; }
+.nxc-scrub__fill { position: absolute; left: 0; height: 2px; background: var(--wf-accent); border-radius: 2px; }
+.nxc-scrub__thumb { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: var(--wf-paper);
+  border: 1px solid var(--wf-accent); transform: translateX(-50%); box-shadow: 0 1px 2px rgba(20,24,30,.18); }
+.nxc-scrub__ticks { display: flex; justify-content: space-between; margin-top: 7px; }
+.nxc-scrub__ticks span { font-family: var(--wf-mono); font-size: 9px; letter-spacing: .08em; color: var(--wf-muted); }
+
+/* 圖層註解（傳達「換選項＝換層」的合成模型）-------------- */
+.nxc-layers { display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  font-family: var(--wf-mono); font-size: 10px; letter-spacing: .04em; color: var(--wf-muted); }
+.nxc-layers .lk { color: var(--wf-faint); }
+.nxc-layers .lv { color: var(--wf-ink-2); }
+
+/* ---- 全螢幕 OVERLAY -------------------------------------- */
+.nxc-overlay { position: fixed; inset: 0; z-index: 80; display: flex; justify-content: center;
+  background: rgba(20,24,30,.62); opacity: 0; pointer-events: none; transition: opacity .26s ease; }
+.nxc-overlay.is-open { opacity: 1; pointer-events: auto; }
+.nxc-screen { position: relative; width: min(var(--nxc-w, 1440px), 100vw); height: 100%;
+  background: var(--wf-paper); display: flex; flex-direction: column; overflow: hidden;
+  transform: translateY(18px); transition: transform .3s cubic-bezier(.32,.72,0,1); }
+.nxc-overlay.is-open .nxc-screen { transform: translateY(0); }
+
+/* 頂列 */
+.nxc-bar { flex: 0 0 auto; display: flex; align-items: center; gap: 14px; height: 56px; padding: 0 18px;
+  border-bottom: 1px solid var(--wf-line); background: var(--wf-paper); z-index: 5; }
+.nxc-bar__x { width: 38px; height: 38px; border: 1px solid var(--wf-line); background: var(--wf-paper); border-radius: var(--wf-r);
+  cursor: pointer; font-size: 17px; color: var(--wf-ink); display: inline-flex; align-items: center; justify-content: center; }
+.nxc-bar__x:hover { border-color: var(--wf-ink); }
+.nxc-bar__title { display: flex; flex-direction: column; line-height: 1.1; }
+.nxc-bar__title .t { font-size: 15px; font-weight: 600; color: var(--wf-ink); }
+.nxc-bar__title .s { font-family: var(--wf-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--wf-muted); }
+.nxc-bar__prog { margin-left: auto; font-family: var(--wf-mono); font-size: 11px; letter-spacing: .1em; color: var(--wf-ink-2); }
+
+/* 主體：手機直向、桌機左右分割 */
+.nxc-body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.nxc-stagecol { background: var(--wf-stage); }
+.nxc-stagecol .nxc-stage-inner { padding: 16px; }
+.nxc-panel { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 18px; padding: 18px; overflow: hidden; }
+
+/* 步驟列（可點跳選 + 狀態）-------------------------------- */
+.nxc-steps { flex: 0 0 auto; display: flex; gap: 6px; }
+.nxc-step { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 8px;
+  border: 1px solid var(--wf-line); background: var(--wf-paper); border-radius: var(--wf-r-pill); cursor: pointer;
+  font-size: 13px; color: var(--wf-ink-2); white-space: nowrap; transition: border-color .15s, color .15s; }
+.nxc-step:hover { border-color: var(--wf-ink); color: var(--wf-ink); }
+.nxc-step .n { width: 20px; height: 20px; border-radius: 50%; border: 1px solid currentColor; display: inline-flex;
+  align-items: center; justify-content: center; font-family: var(--wf-mono); font-size: 10px; }
+.nxc-step[data-state="current"] { background: var(--wf-accent); border-color: var(--wf-accent); color: #fff; }
+.nxc-step[data-state="done"] { color: var(--wf-ink); border-color: var(--wf-line-strong); }
+.nxc-step[data-state="done"] .n { background: var(--wf-ink); color: #fff; border-color: var(--wf-ink); }
+
+/* 步驟內容 */
+.nxc-stepc { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+.nxc-stepc__head { display: flex; flex-direction: column; gap: 4px; }
+.nxc-stepc__head h4 { font-size: 18px; font-weight: 600; margin: 0; color: var(--wf-ink); }
+.nxc-stepc__head p { font-size: 13px; line-height: 1.55; color: var(--wf-ink-2); margin: 0; }
+
+/* 版本卡 */
+.nxc-vcards { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.nxc-vcard { text-align: left; border: 1px solid var(--wf-line); background: var(--wf-paper); border-radius: var(--wf-r);
+  padding: 14px 16px; cursor: pointer; display: flex; flex-direction: column; gap: 6px; transition: border-color .15s; }
+.nxc-vcard:hover { border-color: var(--wf-ink); }
+.nxc-vcard[aria-selected="true"] { border-color: var(--wf-accent); box-shadow: inset 0 0 0 1px var(--wf-accent); }
+.nxc-vcard__top { display: flex; align-items: baseline; gap: 10px; }
+.nxc-vcard__name { font-size: 16px; font-weight: 600; color: var(--wf-ink); }
+.nxc-vcard__diff { font-size: 13px; line-height: 1.5; color: var(--wf-ink-2); }
+
+/* 色票格 / 縮圖格 */
+.nxc-swatches { display: flex; flex-wrap: wrap; gap: 12px; }
+.nxc-sw { display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: pointer; width: 64px;
+  background: none; border: 0; padding: 0; }
+.nxc-sw__dot { width: 40px; height: 40px; border-radius: var(--wf-r-sm); border: 1px solid var(--wf-line-strong); position: relative; }
+.nxc-sw[aria-selected="true"] .nxc-sw__dot { box-shadow: 0 0 0 2px var(--wf-paper), 0 0 0 4px var(--wf-accent); }
+.nxc-sw__name { font-size: 11px; line-height: 1.3; text-align: center; color: var(--wf-ink-2); }
+
+/* 外觀配色步驟：一列兩個、加寬色框、附規格說明 */
+.nxc-swatches--2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nxc-swatches--2col .nxc-sw { width: auto; flex-direction: column; align-items: stretch; gap: 8px; text-align: left;
+  border: 1px solid var(--wf-line); border-radius: var(--wf-r); padding: 10px; transition: border-color .15s; }
+.nxc-swatches--2col .nxc-sw:hover { border-color: var(--wf-ink); }
+.nxc-swatches--2col .nxc-sw[aria-selected="true"] { border-color: var(--wf-accent); box-shadow: inset 0 0 0 1px var(--wf-accent); }
+.nxc-swatches--2col .nxc-sw__dot { width: 100%; height: 52px; }
+.nxc-swatches--2col .nxc-sw[aria-selected="true"] .nxc-sw__dot { box-shadow: none; }
+.nxc-swatches--2col .nxc-sw__name { text-align: left; font-size: 14px; font-weight: 500; color: var(--wf-ink); }
+.nxc-swatches--2col .nxc-sw__spec { font-size: 11px; line-height: 1.5; color: var(--wf-ink-2); }
+
+.nxc-thumbs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.nxc-thumb { text-align: left; border: 1px solid var(--wf-line); background: var(--wf-paper); border-radius: var(--wf-r);
+  padding: 10px; cursor: pointer; display: flex; flex-direction: column; gap: 8px; transition: border-color .15s; }
+.nxc-thumb:hover { border-color: var(--wf-ink); }
+.nxc-thumb[aria-selected="true"] { border-color: var(--wf-accent); box-shadow: inset 0 0 0 1px var(--wf-accent); }
+.nxc-thumb .wf-img { aspect-ratio: 4/3; }
+.nxc-thumb__name { font-size: 13px; font-weight: 500; color: var(--wf-ink); }
+.nxc-thumb__en { font-family: var(--wf-mono); font-size: 10px; letter-spacing: .1em; color: var(--wf-muted); }
+
+/* 底部導覽 */
+.nxc-foot { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; padding: 12px 18px;
+  border-top: 1px solid var(--wf-line); background: var(--wf-paper); }
+.nxc-foot .sp { flex: 1 1 auto; }
+.nxc-foot__btn { min-width: 104px; justify-content: center; }
+.nxc-foot__hint { font-family: var(--wf-mono); font-size: 10px; letter-spacing: .08em; color: var(--wf-muted); }
+
+/* gate toast */
+.nxc-toast { position: absolute; left: 50%; bottom: 84px; transform: translateX(-50%) translateY(10px); z-index: 9;
+  background: var(--wf-ink); color: #fff; font-size: 12px; line-height: 1.5; padding: 10px 16px; border-radius: var(--wf-r);
+  max-width: 80%; text-align: center; opacity: 0; pointer-events: none; transition: opacity .22s, transform .22s; }
+.nxc-toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.nxc-toast b { font-weight: 600; }
+
+/* ---- 完成 / 揭曉（全幅車圖 + 上層資訊）------------------ */
+.nxc-reveal { flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden; background: var(--wf-stage); }
+.nxc-reveal__photo { position: absolute; inset: 0; width: 100%; height: 100%; }
+.nxc-reveal__photo .wf-img__label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.nxc-bar--float { position: absolute; top: 0; left: 0; right: 0; z-index: 4; background: transparent; border-bottom: 0; }
+.nxc-bar--float .nxc-bar__x { background: var(--wf-paper); }
+.nxc-bar--float [data-edit] { background: var(--wf-paper); }
+.nxc-reveal__overlay { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; padding: 30px 22px 24px;
+  background: linear-gradient(to top, var(--wf-paper) 0%, rgba(255,255,255,.95) 42%, rgba(255,255,255,.78) 70%, rgba(255,255,255,0) 100%); }
+.nxc-reveal__brand { font-family: var(--wf-mono); font-size: 12px; font-weight: 600; letter-spacing: .18em; color: var(--wf-ink-2); }
+.nxc-reveal__model { font-size: 30px; font-weight: 600; letter-spacing: -.01em; line-height: 1.1; color: var(--wf-ink); margin-top: 2px; }
+.nxc-reveal__price { font-family: var(--wf-mono); font-size: 15px; color: var(--wf-ink); margin-top: 6px; }
+.nxc-reveal__specs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 28px; margin-top: 18px; }
+.nxc-reveal__spec { display: flex; flex-direction: column; gap: 3px; }
+.nxc-reveal__spec .k { font-size: 12px; color: var(--wf-ink-2); }
+.nxc-reveal__spec .v { font-size: 18px; font-weight: 600; color: var(--wf-ink); }
+.nxc-reveal__cta { flex: 0 0 auto; display: flex; gap: 10px; padding: 14px 18px; border-top: 1px solid var(--wf-line); background: var(--wf-paper); }
+.nxc-reveal__cta .wf-btn { flex: 1 1 0; justify-content: center; }
+
+/* ============================================================
+   裝置重排：mobile（直向 sticky）/ split（左右分割）
+   由 .nxc-overlay[data-device] 與入口卡的 .wf-canvas[data-device] 驅動
+   ============================================================ */
+
+/* 入口卡：固定單欄置中（車圖 + 色票 + 色名）*/
+
+/* overlay 主體 split */
+.nxc-overlay[data-device="mobile"] .nxc-body { flex-direction: column; }
+.nxc-overlay[data-device="mobile"] .nxc-stagecol { flex: 0 0 auto; box-shadow: 0 1px 0 var(--wf-line); }
+
+/* 平板：上下分割 — 車圖在上加大、選擇列移到下半部 */
+.nxc-overlay[data-device="tablet"] .nxc-body { flex-direction: column; overflow: hidden; }
+.nxc-overlay[data-device="tablet"] .nxc-stagecol { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.nxc-overlay[data-device="tablet"] .nxc-panel { flex: 0 0 42%; min-height: 0; }
+
+/* 桌機：左右分割 — 車圖加大、選擇列調窄 */
+.nxc-overlay[data-device="desktop"] .nxc-body { flex-direction: row; overflow: hidden; }
+.nxc-overlay[data-device="desktop"] .nxc-stagecol { flex: 0 0 66%; display: flex; flex-direction: column; }
+.nxc-overlay[data-device="desktop"] .nxc-panel { flex: 1 1 auto; min-height: 0; }
+
+/* 平板/桌機：車圖填滿舞台區（加大） */
+.nxc-overlay[data-device="tablet"] .nxc-stage-inner,
+.nxc-overlay[data-device="desktop"] .nxc-stage-inner { flex: 1 1 auto; min-height: 0; display: flex; }
+.nxc-overlay[data-device="tablet"] .nxc-stage-wrap,
+.nxc-overlay[data-device="desktop"] .nxc-stage-wrap { flex: 1 1 auto; min-height: 0; }
+.nxc-overlay[data-device="tablet"] .nxc-canvas,
+.nxc-overlay[data-device="desktop"] .nxc-canvas { aspect-ratio: auto; height: 100%; }
+.nxc-overlay[data-device="tablet"] .nxc-thumbs,
+.nxc-overlay[data-device="desktop"] .nxc-thumbs { grid-template-columns: repeat(3, 1fr); }
+.nxc-overlay[data-device="tablet"] .nxc-vcards,
+.nxc-overlay[data-device="desktop"] .nxc-vcards { grid-template-columns: 1fr 1fr; }
+
+/* 完成頁：桌機左右（大圖 + 摘要） */
+.nxc-overlay[data-device="tablet"] .nxc-reveal,
+.nxc-overlay[data-device="desktop"] .nxc-reveal { flex-direction: row; overflow: hidden; }
+.nxc-overlay[data-device="tablet"] .nxc-reveal__stage,
+.nxc-overlay[data-device="desktop"] .nxc-reveal__stage { flex: 0 0 56%; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
+.nxc-overlay[data-device="tablet"] .nxc-reveal__info,
+.nxc-overlay[data-device="desktop"] .nxc-reveal__info { flex: 1 1 auto; overflow-y: auto; }
+.nxc-overlay[data-device="desktop"] .nxc-reveal__stage .nxc-canvas { aspect-ratio: 16/10; }

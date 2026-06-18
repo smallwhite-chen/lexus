@@ -128,9 +128,8 @@
         '<div class="nx-feat__head">' +
           '<div class="wf-sectiontitle"><span class="word word--outline">' + f.en + '</span>' +
           '<span class="sub">' + f.sub + '</span><span class="cn">' + f.cn + '</span></div>' +
-          (f.optional ? '<span class="wf-tag wf-tag--solid">本車型配備</span>' : '') +
         '</div>';
-      const moreBtn = el('button', 'wf-btn wf-btn--secondary wf-btn--sm nx-feat__more', '查看更詳細 ›');
+      const moreBtn = el('button', 'wf-btn wf-btn--secondary wf-btn--sm nx-feat__more', '查看詳細特色介紹 ›');
       head.appendChild(moreBtn);
       sec.appendChild(head);
 
@@ -167,12 +166,12 @@
       // 單一「查看更詳細」按鈕：開啟目前所在的特色項目
       moreBtn.addEventListener('click', () => openDetail(f.id, parseInt(car.dataset.index || '0', 10)));
 
-      // nav: arrows + count + dots
+      // nav: 左箭頭 · 頁次 · 右箭頭
       const nav = el('div', 'nx-car__nav');
       nav.innerHTML =
-        '<div class="wf-arrows"><button data-prev>‹</button><button data-next>›</button></div>' +
-        '<div class="nx-car__meta"><span class="nx-car__count" data-count></span>' +
-        '<div class="wf-dots" data-dots></div></div>';
+        '<div class="wf-arrows"><button data-prev>‹</button></div>' +
+        '<span class="nx-car__count" data-count></span>' +
+        '<div class="wf-arrows"><button data-next>›</button></div>';
       wrap.appendChild(nav);
       sec.appendChild(wrap);
       mount.appendChild(sec);
@@ -186,11 +185,7 @@
     const viewport = $('.nx-car__viewport', car);
     const track = $('.nx-car__track', car);
     const countEl = $('[data-count]', nav);
-    const dotsEl = $('[data-dots]', nav);
     let index = 0;
-    for (let i = 0; i < total; i++) { const d = el('i'); dotsEl.appendChild(d); }
-    const dots = $$('i', dotsEl);
-    dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
 
     function step() {
       const card = track.children[0];
@@ -204,7 +199,6 @@
       track.style.transform = 'translateX(' + (-t) + 'px)';
       countEl.textContent = String(index + 1) + ' / ' + total;
       car.dataset.index = index;
-      dots.forEach((d, i) => d.setAttribute('aria-current', i === index ? 'true' : 'false'));
     }
     function go(i) { index = Math.max(0, Math.min(total - 1, i)); apply(); }
     $('[data-prev]', nav).addEventListener('click', () => go(index - 1));
@@ -234,9 +228,10 @@
      特色詳細 — Modal / BottomSheet（上一項 / 下一項）
      ============================================================ */
   let detailCtx = null;
-  function openDetail(catId, idx) {
-    const f = D.features.find(x => x.id === catId); if (!f) return;
-    detailCtx = { catId, idx };
+  function openDetail(catId) {
+    const list = visibleFeatures();
+    const idx = list.findIndex(x => x.id === catId); if (idx < 0) return;
+    detailCtx = { catIdx: idx };
     let overlay = $('#nx-detail');
     if (!overlay) {
       overlay = el('div', 'nx-overlay'); overlay.id = 'nx-detail';
@@ -246,33 +241,115 @@
       document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
     }
     overlay.className = 'nx-overlay is-open ' + (device() === 'mobile' ? 'nx-overlay--sheet' : 'nx-overlay--modal');
+    overlay.style.setProperty('--nx-dev-w', ((window.WF_WIDTHS && window.WF_WIDTHS[device()]) || 1440) + 'px');
     paintDetail();
     document.body.style.overflow = 'hidden';
   }
+
+  // 由特色 items 組出區塊序列（A 上圖下文 / B 左圖右文 / C 右圖左文 / D 引言 / E 輪播）
+  function buildDetailBlocks(f) {
+    const it = f.items, blocks = [];
+    const body = (x) => [x.a.lead].concat(x.a.paras).join('');
+    if (it[0]) blocks.push({ type: 'a', sub: it[0].t, en: it[0].en, body: body(it[0]), media: 'image' });
+    if (it[1]) blocks.push({ type: 'b', sub: it[1].t, en: it[1].en, body: body(it[1]), media: 'video' });
+    blocks.push({ type: 'd', quote: it[0] ? it[0].a.lead : f.cn });
+    if (it[2]) blocks.push({ type: 'c', sub: it[2].t, en: it[2].en, body: body(it[2]), media: 'image' });
+    const e = it[3] || it[0];
+    if (e) blocks.push({ type: 'e', sub: e.t, en: e.en, body: e.a.lead, media: 'image', slides: 4, slideLabel: f.cat });
+    return blocks;
+  }
+
+  function detailMedia(b, ratio) {
+    const isVid = b.media === 'video';
+    const cls = 'wf-img nxd-media' + (isVid ? ' wf-img--dark' : '');
+    const label = (isVid ? 'VIDEO · ' : '') + (b.en || '');
+    const play = isVid ? '<button class="nx-play nx-play--onimg"><span class="ic">▶</span></button>' : '';
+    return '<div class="' + cls + '" style="aspect-ratio:' + ratio + '">' + play +
+      '<span class="wf-img__label">' + label + '</span></div>';
+  }
+
+  function detailText(b) {
+    return '<div class="nxd-text">' +
+      '<h3 class="nxd-bsub">' + b.sub + '</h3>' +
+      '<p class="wf-body">' + b.body + '</p></div>';
+  }
+
+  function renderBlock(b) {
+    if (b.type === 'd') return '<blockquote class="nxd-block nxd-quote">' + b.quote + '</blockquote>';
+    if (b.type === 'a') return '<section class="nxd-block nxd-block--a">' + detailMedia(b, '16/9') + detailText(b) + '</section>';
+    if (b.type === 'b') return '<section class="nxd-block nxd-split">' + detailMedia(b, '4/3') + detailText(b) + '</section>';
+    if (b.type === 'c') return '<section class="nxd-block nxd-split nxd-split--rev">' + detailText(b) + detailMedia(b, '4/3') + '</section>';
+    if (b.type === 'e') {
+      const n = b.slides || 4; let slides = '';
+      for (let i = 0; i < n; i++) {
+        slides += '<div class="nxd-slide wf-img"><span class="wf-img__label">' + b.slideLabel + ' · 視角 ' + (i + 1) + '</span></div>';
+      }
+      return '<section class="nxd-block nxd-carousel" data-carousel>' +
+        '<div class="nxd-carousel__view"><div class="nxd-carousel__track">' + slides + '</div></div>' +
+        '<div class="nxd-carousel__nav"><div class="wf-arrows"><button data-cprev>‹</button></div>' +
+        '<span class="nxd-carousel__count" data-ccount></span>' +
+        '<div class="wf-arrows"><button data-cnext>›</button></div></div>' +
+        detailText(b) + '</section>';
+    }
+    return '';
+  }
+
+  function wireCarousel(c) {
+    const track = $('.nxd-carousel__track', c);
+    const slides = $$('.nxd-slide', c);
+    const count = $('[data-ccount]', c);
+    let i = 0;
+    const upd = () => { track.style.transform = 'translateX(-' + (i * 100) + '%)'; count.textContent = (i + 1) + ' / ' + slides.length; };
+    $('[data-cprev]', c).addEventListener('click', () => { i = (i - 1 + slides.length) % slides.length; upd(); });
+    $('[data-cnext]', c).addEventListener('click', () => { i = (i + 1) % slides.length; upd(); });
+    upd();
+  }
+
+  // 上一項 / 下一項：在當頁捲動到上一個 / 下一個段落（區塊標題）
+  function smoothScrollTo(elm, to, dur) {
+    const start = elm.scrollTop, diff = to - start, t0 = performance.now();
+    if (Math.abs(diff) < 2) { elm.scrollTop = to; return; }
+    (function step(now) {
+      const p = Math.min(1, (now - t0) / (dur || 380));
+      elm.scrollTop = start + diff * (0.5 - 0.5 * Math.cos(Math.PI * p));
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+  function scrollToBlock(panel, dir) {
+    const scroll = $('.nx-panel__scroll', panel);
+    const blocks = $$('.nxd-block', scroll);
+    if (!blocks.length) return;
+    const sTop = scroll.getBoundingClientRect().top;
+    const tops = blocks.map(b => b.getBoundingClientRect().top - sTop + scroll.scrollTop);
+    let cur = 0;
+    tops.forEach((y, i) => { if (y <= scroll.scrollTop + 8) cur = i; });
+    const target = Math.min(blocks.length - 1, Math.max(0, cur + dir));
+    smoothScrollTo(scroll, Math.max(0, tops[target] - 4), 380);
+  }
+
   function paintDetail() {
     const overlay = $('#nx-detail'); const panel = $('[data-panel]', overlay);
-    const f = D.features.find(x => x.id === detailCtx.catId);
-    const it = f.items[detailCtx.idx];
+    const list = visibleFeatures();
+    const f = list[detailCtx.catIdx];
+    const blocks = buildDetailBlocks(f);
     panel.innerHTML =
       '<div class="nx-panel__top">' +
-        '<div><span class="wf-eyebrow">' + f.cat + ' · ' + it.en + '</span>' +
-        '<div class="wf-anno" style="margin-top:4px">' + (detailCtx.idx + 1) + ' / ' + f.items.length + '</div></div>' +
+        '<div>' +
+        '<h2 class="wf-h2 nxd-title">' + f.cat + '</h2>' +
+        '<p class="nxd-subtitle">' + f.cn + '</p></div>' +
         '<button class="nx-panel__x" data-close aria-label="close">✕</button>' +
       '</div>' +
-      '<div class="nx-panel__scroll">' +
-        '<h2 class="wf-h2" style="margin-bottom:8px">' + it.t + '</h2>' +
-        '<p class="nx-panel__lead">' + it.a.lead + '</p>' +
-        '<div class="wf-img" style="aspect-ratio:16/9;margin:20px 0"><span class="wf-img__label">' + f.cat + ' DETAIL · ' + it.en + '</span></div>' +
-        it.a.paras.map(p => '<p class="wf-body" style="margin-bottom:14px">' + p + '</p>').join('') +
-        '<div class="wf-img" style="aspect-ratio:21/9;margin:14px 0"><span class="wf-img__label">' + it.en + ' · 情境</span></div>' +
-      '</div>' +
+      '<div class="nx-panel__scroll nxd-scroll">' + blocks.map(renderBlock).join('') + '</div>' +
       '<div class="nx-panel__foot">' +
-        '<button class="wf-btn wf-btn--ghost wf-btn--sm" data-pv>↑ 上一項</button>' +
-        '<button class="wf-btn wf-btn--ghost wf-btn--sm" data-nx>下一項 ↓</button>' +
+        '<button class="wf-btn wf-btn--secondary wf-btn--sm" data-closef>關閉</button>' +
+        '<button class="wf-btn wf-btn--ghost wf-btn--sm" data-pv>‹ 上一項</button>' +
+        '<button class="wf-btn wf-btn--ghost wf-btn--sm" data-nx>下一項 ›</button>' +
       '</div>';
-    $('[data-pv]', panel).addEventListener('click', () => { detailCtx.idx = (detailCtx.idx - 1 + f.items.length) % f.items.length; paintDetail(); });
-    $('[data-nx]', panel).addEventListener('click', () => { detailCtx.idx = (detailCtx.idx + 1) % f.items.length; paintDetail(); });
+    $('[data-pv]', panel).addEventListener('click', () => scrollToBlock(panel, -1));
+    $('[data-nx]', panel).addEventListener('click', () => scrollToBlock(panel, 1));
+    $('[data-closef]', panel).addEventListener('click', closeDetail);
     $('.nx-panel__x', panel).addEventListener('click', closeDetail);
+    $$('[data-carousel]', panel).forEach(wireCarousel);
     $('.nx-panel__scroll', panel).scrollTop = 0;
   }
   function closeDetail() { const o = $('#nx-detail'); if (o) o.classList.remove('is-open'); document.body.style.overflow = ''; }
@@ -302,9 +379,9 @@
 
     const nav = el('div', 'nx-car__nav');
     nav.innerHTML =
-      '<div class="wf-arrows"><button data-prev>‹</button><button data-next>›</button></div>' +
-      '<div class="nx-car__meta"><span class="nx-car__count" data-count></span>' +
-      '<div class="wf-dots" data-dots></div></div>';
+      '<div class="wf-arrows"><button data-prev>‹</button></div>' +
+      '<span class="nx-car__count" data-count></span>' +
+      '<div class="wf-arrows"><button data-next>›</button></div>';
     mount.appendChild(nav);
 
     initCarousel(car, nav, D.compare.length);
@@ -315,39 +392,49 @@
      ============================================================ */
   function renderSpec() {
     const mount = $('#nx-spec'); if (!mount) return;
+    const S = D.spec;
     const G = D.grades;
-    const same = arr => arr.every(v => v === arr[0]);
+    const open = S.groups.map(() => false);
+    let cols = [0, 1, 2].slice(0, G.length);
+    let sel = Math.max(0, cols.indexOf(G.indexOf(S.model)));
     let diffOnly = false;
-    const advOpen = {};
-
-    function gradeHead() {
-      return '<div class="wf-spec__row wf-spec__row--head"><span class="wf-spec__k">車款</span>' +
-        G.map(g => '<span class="wf-spec__v">' + g + '</span>').join('') + '</div>';
-    }
-    function dataRow(r) {
-      if (diffOnly && same(r.v)) return '';
-      const flag = !same(r.v) ? ' nx-diff' : '';
-      return '<div class="wf-spec__row' + flag + '"><span class="wf-spec__k">' + r.k +
-        (flag ? '<span class="nx-diff__dot" title="各車型有差異"></span>' : '') + '</span>' +
-        r.v.map(v => '<span class="wf-spec__v">' + v + '</span>').join('') + '</div>';
+    const same = arr => arr.every(v => v === arr[0]);
+    const disp = arr => cols.map(gi => arr[gi]);
+    const cell = (v, c) => '<span class="nx-spec3__v" data-col="' + c + '">' + (v === '●' ? '<span class="nx-spec3__dot"></span>' : v) + '</span>';
+    const vCells = arr => cols.map((gi, c) => cell(arr[gi], c)).join('');
+    const rowHtml = (k, arr, extra) =>
+      '<div class="nx-spec3__row' + (extra || '') + '"><span class="nx-spec3__k">' + k + '</span>' + vCells(arr) + '</div>';
+    function headRow() {
+      return '<div class="nx-spec3__row nx-spec3__row--head"><span class="nx-spec3__k">車型</span>' +
+        cols.map((gi, c) => '<span class="nx-spec3__v" data-col="' + c + '"><span class="nx-spec3__colsel nx-eqfilter__select"><select data-colsel="' + c + '">' +
+          G.map((g, i) => '<option' + (i === gi ? ' selected' : '') + '>' + g + '</option>').join('') +
+        '</select><span class="chev">▾</span></span></span>').join('') + '</div>';
     }
     function build() {
-      let html = '<div class="wf-spec">';
-      html += '<div class="nx-spec__bar"><span class="wf-eyebrow">基本規格 · BASIC</span>' +
-        '<label class="nx-switch"><input type="checkbox" data-diff' + (diffOnly ? ' checked' : '') + '><span class="nx-switch__t"></span>僅顯示差異</label></div>';
-      html += gradeHead();
-      html += D.spec.basic.map(dataRow).join('');
-      D.spec.adv.forEach((grp, gi) => {
-        const open = !!advOpen[gi];
-        html += '<div class="wf-spec__row wf-spec__row--collapse nx-advhead" data-adv="' + gi + '">' +
-          '<span class="wf-spec__k"><span class="wf-tag" style="height:22px">進階</span>' + grp.group + '</span>' +
-          '<span class="chev">' + (open ? '▴' : '▾') + '</span></div>';
-        if (open) html += grp.rows.map(dataRow).join('');
+      let html = '<div class="nx-spec3" data-sel="' + sel + '">';
+      html += '<div class="nx-spec3__filter"><label class="nx-switch"><input type="checkbox" data-diff' + (diffOnly ? ' checked' : '') + '><span class="nx-switch__t"></span>僅顯示差異規格</label></div>';
+      html += '<div class="nx-spec3__top">' +
+        '<div class="nx-spec3__pick"><span class="nx-spec3__toplabel">車型</span>' +
+          '<div class="nx-eqfilter__select"><select data-specmodel>' +
+            cols.map((gi, c) => '<option value="' + c + '"' + (c === sel ? ' selected' : '') + '>' + G[gi] + '</option>').join('') +
+          '</select><span class="chev">▾</span></div></div>' +
+        headRow() +
+        rowHtml('建議售價（萬）', S.price, ' nx-spec3__row--price') +
+      '</div>';
+      S.groups.forEach((grp, gi) => {
+        const rows = diffOnly ? grp.rows.filter(r => !same(disp(r.v))) : grp.rows;
+        if (!rows.length) return;
+        html += '<button class="nx-spec3__ghead" data-g="' + gi + '"><span>' + grp.group + '</span><span class="chev">' + (open[gi] ? '▴' : '▾') + '</span></button>';
+        if (open[gi]) html += '<div class="nx-spec3__rows">' + rows.map(r => rowHtml(r.k, r.v)).join('') + '</div>';
       });
+      html += '<div class="nx-spec3__notes">' + S.notes.map(n => '<p>' + n + '</p>').join('') + '</div>';
       html += '</div>';
       mount.innerHTML = html;
+      const root = $('.nx-spec3', mount);
       $('[data-diff]', mount).addEventListener('change', e => { diffOnly = e.target.checked; build(); });
-      $$('[data-adv]', mount).forEach(h => h.addEventListener('click', () => { const i = h.dataset.adv; advOpen[i] = !advOpen[i]; build(); }));
+      $('[data-specmodel]', mount).addEventListener('change', e => { sel = +e.target.value; root.dataset.sel = sel; });
+      $$('[data-colsel]', mount).forEach(s => s.addEventListener('change', e => { cols[+e.target.dataset.colsel] = e.target.selectedIndex; build(); }));
+      $$('[data-g]', mount).forEach(h => h.addEventListener('click', () => { const i = +h.dataset.g; open[i] = !open[i]; build(); }));
     }
     build();
   }
@@ -365,8 +452,7 @@
         '<span class="wf-eyebrow">車型篩選</span>' +
         '<div class="nx-eqfilter__select"><select data-eqfilter>' +
           D.equipGrades.map((g, i) => '<option value="' + g + '"' + (i === 0 ? ' selected' : '') + '>' + g + '</option>').join('') +
-        '</select><span class="chev">▾</span></div>' +
-        '<span class="nx-eqfilter__count" data-eqcount></span>';
+        '</select><span class="chev">▾</span></div>';
       bar.querySelector('[data-eqfilter]').addEventListener('change', e => { equipFilter = e.target.value; paintEquip(); });
     }
     equipFilter = bar.querySelector('[data-eqfilter]').value;
@@ -376,76 +462,62 @@
   function paintEquip() {
     const mount = $('#nx-equip'); if (!mount) return;
     mount.innerHTML = '';
-    let total = 0, shownCats = 0;
-    D.equip.forEach(grp => {
-      const items = grp.items.filter(it => equipFilter === 'all' || it.grades.includes(equipFilter));
-      if (!items.length) return;
-      total += items.length;
-      const acc = el('div', 'nx-acc' + (shownCats === 0 ? ' is-open' : ''));
-      shownCats++;
+    let total = 0;
+    D.equip.forEach((grp, gi) => {
+      total += grp.items.length;
+      const acc = el('div', 'nx-acc');
       const head = el('button', 'nx-acc__head');
       head.innerHTML = '<span class="nx-acc__cat">' + grp.cat + '</span>' +
-        '<span class="wf-anno">' + items.length + ' 項</span><span class="chev">▾</span>';
+        '<span class="wf-anno">' + grp.items.length + '</span><span class="chev">▾</span>';
       head.addEventListener('click', () => acc.classList.toggle('is-open'));
       const body = el('div', 'nx-acc__body');
       const list = el('div', 'nx-equip__list');
-      items.forEach(it => list.appendChild(equipItem(grp.cat, it)));
+      grp.items.forEach(name => list.appendChild(equipItem(grp.cat, name)));
       body.appendChild(list);
       acc.appendChild(head); acc.appendChild(body);
       mount.appendChild(acc);
     });
-    const cnt = $('[data-eqcount]');
-    if (cnt) cnt.textContent = equipFilter === 'all' ? '共 ' + total + ' 項配備' : equipFilter + ' · ' + total + ' 項配備';
   }
 
-  function equipItem(cat, it) {
+  function equipItem(cat, name) {
     const item = el('div', 'nx-eqitem');
     const head = el('button', 'nx-eqitem__head');
     head.innerHTML =
-      '<span class="nx-eqitem__ic">＋</span>' +
-      '<span class="nx-eqitem__name">' + it.t + '</span>' +
+      '<span class="nx-eqitem__name">' + name + '</span>' +
       '<span class="chev">▾</span>';
     const body = el('div', 'nx-eqitem__body');
-
-    // 圖片輪播
-    const car = el('div', 'nx-eqcar');
+    const imgs = 3;
     let frame = 0;
-    const media = img(cat + ' · ' + it.t, { ratio: '16/9' });
-    media.classList.remove('nx-zoom'); // 由 lightbox 委派處理
+    const car = el('div', 'nx-eqcar');
+    const media = img(cat + ' · ' + name, { ratio: '16/9' });
     media.classList.add('nx-zoom');
-    const counter = el('span', 'nx-eqcar__counter');
-    function paintCar() {
-      media.querySelector('.wf-img__label').textContent = cat + ' · ' + it.t + '（圖 ' + (frame + 1) + '）';
-      media.dataset.zoom = cat + ' · ' + it.t + ' 圖 ' + (frame + 1);
-      counter.textContent = (frame + 1) + ' / ' + it.imgs;
-    }
     car.appendChild(media);
-    if (it.imgs > 1) {
-      const prev = el('button', 'nx-eqcar__arrow nx-eqcar__arrow--prev', '‹');
-      const next = el('button', 'nx-eqcar__arrow nx-eqcar__arrow--next', '›');
-      prev.addEventListener('click', e => { e.stopPropagation(); frame = (frame - 1 + it.imgs) % it.imgs; paintCar(); });
-      next.addEventListener('click', e => { e.stopPropagation(); frame = (frame + 1) % it.imgs; paintCar(); });
-      car.appendChild(prev); car.appendChild(next); car.appendChild(counter);
-    }
-    paintCar();
     body.appendChild(car);
 
-    // 說明
-    const desc = el('p', 'wf-body'); desc.style.margin = '14px 0 0'; desc.textContent = it.d;
-    body.appendChild(desc);
+    // nav：頁次＋左右按鈕移至圖片下方（沿用特色區塊樣式）
+    const nav = el('div', 'nx-car__nav');
+    nav.innerHTML =
+      '<div class="wf-arrows"><button data-prev>‹</button></div>' +
+      '<span class="nx-car__count" data-count></span>' +
+      '<div class="wf-arrows"><button data-next>›</button></div>';
+    body.appendChild(nav);
+    const counter = nav.querySelector('[data-count]');
+    function paintCar() {
+      media.querySelector('.wf-img__label').textContent = cat + ' · ' + name + '（圖 ' + (frame + 1) + '）';
+      media.dataset.zoom = cat + ' · ' + name + ' 圖 ' + (frame + 1);
+      counter.textContent = (frame + 1) + ' / ' + imgs;
+    }
+    nav.querySelector('[data-prev]').addEventListener('click', () => { frame = (frame - 1 + imgs) % imgs; paintCar(); });
+    nav.querySelector('[data-next]').addEventListener('click', () => { frame = (frame + 1) % imgs; paintCar(); });
+    paintCar();
 
-    // 配備車型
-    const grades = el('div', 'nx-eqgrades');
-    grades.innerHTML = '<span class="wf-eyebrow">配備車型</span>';
-    const row = el('div', 'nx-eqgrades__row');
-    it.grades.forEach(g => { const chip = el('span', 'nx-eqgrades__chip', '<span class="ck">✓</span>' + g); row.appendChild(chip); });
-    grades.appendChild(row);
-    body.appendChild(grades);
+    const desc = el('p', 'wf-body nx-eqitem__desc');
+    desc.textContent = name + ' 的功能介紹與使用情境說明，將於此處呈現。';
+    body.appendChild(desc);
 
     item.appendChild(head); item.appendChild(body);
     head.addEventListener('click', () => {
       item.classList.toggle('is-open');
-      head.querySelector('.nx-eqitem__ic').textContent = item.classList.contains('is-open') ? '－' : '＋';
     });
     return item;
   }
@@ -456,15 +528,43 @@
   function renderFaq() {
     const mount = $('#nx-faq'); if (!mount) return;
     let cat = 0;
+    const tabwrap = el('div', 'nx-faq__tabwrap');
     const tabs = el('div', 'wf-tabs nx-faq__tabs');
     D.faq.forEach((f, i) => {
       const t = el('button', 'wf-tab', f.cat);
       t.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
-      t.addEventListener('click', () => { cat = i; paint(); });
+      t.addEventListener('click', () => { cat = i; paint(); centerTab(t); });
       tabs.appendChild(t);
     });
+    const more = el('button', 'nx-faq__more', '更多 <span class="chev">▾</span>');
+    more.setAttribute('data-faqmore', '');
+    tabwrap.appendChild(tabs); tabwrap.appendChild(more);
     const list = el('div', 'nx-faq__list');
-    mount.appendChild(tabs); mount.appendChild(list);
+    mount.appendChild(tabwrap); mount.appendChild(list);
+
+    function centerTab(t) {
+      const target = t.offsetLeft - (tabs.clientWidth - t.offsetWidth) / 2;
+      tabs.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+    }
+
+    // 「更多」→ 向下展開全部分類選單
+    let menu = null;
+    function closeMenu() { if (menu) menu.classList.remove('is-open'); more.setAttribute('aria-expanded', 'false'); }
+    function toggleMenu() {
+      if (menu && menu.classList.contains('is-open')) { closeMenu(); return; }
+      if (!menu) { menu = el('div', 'nx-catmenu'); tabwrap.appendChild(menu); }
+      menu.innerHTML = '<span class="wf-eyebrow nx-catmenu__hd">問答分類</span>' +
+        '<div class="nx-catmenu__grid">' +
+          D.faq.map((f, i) => '<button class="nx-catmenu__item' + (i === cat ? ' is-current' : '') + '" data-faqgo="' + i + '"><span class="nx-catmenu__cn">' + f.cat + '</span></button>').join('') +
+        '</div>';
+      $$('[data-faqgo]', menu).forEach(b => b.addEventListener('click', () => { cat = +b.dataset.faqgo; closeMenu(); paint(); const t = $$('.wf-tab', tabs)[cat]; if (t) centerTab(t); }));
+      more.setAttribute('aria-expanded', 'true');
+      requestAnimationFrame(() => menu.classList.add('is-open'));
+    }
+    more.addEventListener('click', e => { e.stopPropagation(); toggleMenu(); });
+    document.addEventListener('click', e => { if (!e.target.closest('.nx-faq__tabwrap')) closeMenu(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
     function paint() {
       $$('.wf-tab', tabs).forEach((t, i) => t.setAttribute('aria-selected', i === cat ? 'true' : 'false'));
       list.innerHTML = '';
@@ -506,6 +606,14 @@
       inner.appendChild(b);
     });
 
+    // 規格 / 配備（捲動至對應區段）
+    [['nx-spec-section', '規格'], ['nx-equip-section', '配備']].forEach(([id, label]) => {
+      const b = el('button', 'nx-featnav__btn', label);
+      b.dataset.target = id;
+      b.addEventListener('click', () => { scrollToFeat(id); centerNavBtn(b); });
+      inner.appendChild(b);
+    });
+
     // 「更多」按鈕 → 展開向下分類選單
     const moreBtn = $('[data-featmore]', nav);
     if (moreBtn && !moreBtn.dataset.ready) {
@@ -531,6 +639,7 @@
       });
     }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
     feats.forEach(f => { const s = $('#feat-' + f.id); if (s) spyObs.observe(s); });
+    ['nx-spec-section', 'nx-equip-section'].forEach(id => { const s = $('#' + id); if (s) spyObs.observe(s); });
   }
 
   function toggleCatMenu() {
@@ -540,13 +649,21 @@
     if (!menu) { menu = el('div', 'nx-catmenu'); wrap.appendChild(menu); }
     const cur = $('.nx-featnav__btn[aria-current="true"]');
     const curId = cur ? cur.dataset.target : null;
+    const feats = visibleFeatures();
+    const mandatory = feats.filter(f => !f.optional);
+    const optional = feats.filter(f => f.optional);
+    const item = (go, cn, en, full) =>
+      '<button class="nx-catmenu__item' + (go === curId ? ' is-current' : '') + (full ? ' nx-catmenu__item--full' : '') + '" data-go="' + go + '">' +
+      '<span class="nx-catmenu__cn">' + cn + '</span>' +
+      '<span class="wf-anno">' + en + '</span></button>';
     menu.innerHTML =
       '<span class="wf-eyebrow nx-catmenu__hd">特色分類</span>' +
-      visibleFeatures().map(f =>
-        '<button class="nx-catmenu__item' + ('feat-' + f.id === curId ? ' is-current' : '') + '" data-go="feat-' + f.id + '">' +
-        '<span class="nx-catmenu__cn">' + f.cat + '</span>' +
-        '<span class="wf-anno">' + f.en + ' · ' + f.items.length + ' 項</span></button>'
-      ).join('');
+      '<div class="nx-catmenu__grid">' +
+        mandatory.map(f => item('feat-' + f.id, f.cat, f.en)).join('') +
+        optional.map(f => item('feat-' + f.id, f.cat, f.en, optional.length === 1)).join('') +
+        item('nx-spec-section', '規格', 'SPECIFICATIONS') +
+        item('nx-equip-section', '配備', 'EQUIPMENT') +
+      '</div>';
     $$('[data-go]', menu).forEach(b => b.addEventListener('click', () => { closeCatMenu(); setTimeout(() => scrollToFeat(b.dataset.go), 60); }));
     const mb = $('[data-featmore]'); if (mb) mb.setAttribute('aria-expanded', 'true');
     requestAnimationFrame(() => menu.classList.add('is-open'));

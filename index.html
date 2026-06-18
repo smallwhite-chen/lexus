@@ -3,21 +3,47 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>LEXUS NX · 車款介紹 Wireframe</title>
-<link rel="stylesheet" href="ds/lexus-wf-design-system-ea4c01b0-b28f-42a4-b83b-cb4ba2249a35/styles.css" />
+<title>LEXUS · 首頁（占位）</title>
+<link rel="stylesheet" href="ds/styles.css" />
 <link rel="stylesheet" href="nx-assets/nx.css" />
+<style>
+  /* 首頁占位專用 */
+  .home-hero { position: relative; border-bottom: 1px solid var(--wf-line); }
+  .home-hero__media { aspect-ratio: 16/7; }
+  .wf-canvas[data-device="mobile"] .home-hero__media { aspect-ratio: 4/5; }
+  .home-hero__overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 0 40px; }
+  .wf-canvas[data-device="mobile"] .home-hero__overlay { padding: 0 18px; }
+  .home-hero__eyebrow { font-family: var(--wf-mono); font-size: 12px; letter-spacing: .2em; color: var(--wf-muted); }
+  .home-hero__title { font-size: 44px; font-weight: 600; letter-spacing: -.01em; color: var(--wf-ink); line-height: 1.05; }
+  .wf-canvas[data-device="mobile"] .home-hero__title { font-size: 30px; }
+  .home-hero__sub { font-size: 16px; color: var(--wf-ink-2); max-width: 420px; }
+  .home-sec { padding: 72px 0; }
+  .wf-canvas[data-device="tablet"] .home-sec { padding: 56px 0; }
+  .wf-canvas[data-device="mobile"] .home-sec { padding: 48px 0; }
+  .home-sechead { display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center; margin-bottom: 32px; }
+  .home-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .wf-canvas[data-device="tablet"] .home-grid { grid-template-columns: repeat(2, 1fr); }
+  .wf-canvas[data-device="mobile"] .home-grid { grid-template-columns: 1fr; }
+  .home-card { display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: inherit; }
+  .home-card .wf-img { aspect-ratio: 4/3; transition: border-color .15s; }
+  .home-card:hover .wf-img { border-color: var(--wf-ink); }
+  .home-card__name { font-size: 17px; font-weight: 600; color: var(--wf-ink); }
+  .home-card__meta { font-size: 13px; color: var(--wf-ink-2); }
+  .home-card__tag { display: inline-flex; align-self: flex-start; font-family: var(--wf-mono); font-size: 10px; letter-spacing: .12em; color: var(--wf-accent); background: var(--wf-accent-soft); border: 1px solid var(--wf-accent-line); padding: 3px 9px; border-radius: var(--wf-r-pill); }
+  .home-note { margin-top: 26px; text-align: center; font-family: var(--wf-mono); font-size: 11px; color: var(--wf-muted); }
+</style>
 </head>
 <body>
 <div class="wf-stage" id="wf-stage">
-  <div class="wf-canvas" id="wf-canvas" data-device="mobile" data-screen-label="NX 車款介紹">
+  <div class="wf-canvas" id="wf-canvas" data-device="mobile" data-screen-label="首頁">
 
     <!-- HEADER -->
     <header class="wf-header">
       <button class="wf-burger" aria-label="menu"><i></i><i></i><i></i></button>
-      <div class="wf-logo">LOGO</div>
+      <a class="wf-logo" href="index.html">LOGO</a>
       <span class="wf-header__spacer"></span>
       <nav class="wf-nav">
-        <a href="#" aria-current="true">車款介紹</a><a href="#">購車資訊</a><a href="#">品牌專區</a>
+        <a href="nx.html">車款介紹</a><a href="#">購車資訊</a><a href="#">品牌專區</a>
         <a href="#">售後服務</a><a href="#">認證中古車</a><a href="#">最新消息</a>
       </nav>
       <div class="wf-header__actions">
@@ -29,142 +55,71 @@
       </div>
     </header>
 
-    <!-- 1 · HERO -->
-    <section class="nx-hero" data-screen-label="Hero">
-      <div class="wf-img wf-img--dark nx-hero__media"></div>
-      <div class="nx-hero__overlay">
-        <span class="nx-hero__name">NX</span>
-        <span class="nx-hero__sub">由你 自定未來</span>
-        <div class="nx-hero__cta">
-          <button class="wf-btn wf-btn--primary">預約試乘 ›</button>
+    <!-- HERO（占位）-->
+    <section class="home-hero" data-screen-label="Hero">
+      <div class="wf-img wf-img--dark home-hero__media"></div>
+      <div class="home-hero__overlay">
+        <span class="home-hero__eyebrow">HOMEPAGE · 待設計</span>
+        <span class="home-hero__title">首頁佔位</span>
+        <span class="home-hero__sub">此頁為部署用占位。實際首頁版型待後續設計；目前可由下方車款卡或上方導覽進入「車款介紹」。</span>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:6px">
+          <a class="wf-btn wf-btn--primary" href="nx.html">前往 NX 車款介紹 ›</a>
         </div>
       </div>
     </section>
-    <div class="nx-hero__variants">NX&nbsp;&nbsp;450h+ / 350h / 350 / 200</div>
 
-    <!-- 2 · 車款亮點 -->
-    <div class="wf-container nx-blk">
-      <div class="nx-sechead">
-        <h2 class="wf-h2" style="font-size: 22px">全方位主動安全守護，前衛質感車室，為都會而生的高效油電休旅車。</h2>
-      </div>
-      <div class="nx-highlights" id="nx-highlights"></div>
-    </div>
-
-    <!-- 3 · 360 賞車 -->
-    <section class="nx-stage-grey">
-      <div class="wf-container nx-blk">
-        <div class="nx-sechead">
-          <h2 class="wf-h2">360 賞車</h2>
-          <p class="wf-body">先選外觀或內裝，再挑選車色 · 拖曳即可旋轉檢視</p>
+    <!-- 車款（占位 grid，NX 可點）-->
+    <section class="home-sec" data-screen-label="車款">
+      <div class="wf-container">
+        <div class="home-sechead">
+          <span class="wf-eyebrow">LINEUP</span>
+          <h2 class="wf-h2">車款</h2>
         </div>
-        <div class="nx-360" id="nx-360"></div>
+        <div class="home-grid">
+          <a class="home-card" href="nx.html">
+            <div class="wf-img"><span class="wf-img__label">NX KEY VISUAL</span></div>
+            <span class="home-card__tag">已完成</span>
+            <span class="home-card__name">NX</span>
+            <span class="home-card__meta">豪華都會休旅 · 進入車款介紹</span>
+          </a>
+          <div class="home-card">
+            <div class="wf-img"><span class="wf-img__label">車款占位</span></div>
+            <span class="home-card__name">（車款占位）</span>
+            <span class="home-card__meta">待新增</span>
+          </div>
+          <div class="home-card">
+            <div class="wf-img"><span class="wf-img__label">車款占位</span></div>
+            <span class="home-card__name">（車款占位）</span>
+            <span class="home-card__meta">待新增</span>
+          </div>
+        </div>
+        <p class="home-note">// 首頁為占位頁；目前已完成的內頁為「車款介紹（NX）」。</p>
       </div>
     </section>
-
-    <!-- 4 · 特色 sticky 類別導覽 -->
-    <nav class="nx-featnav" id="nx-featnav" aria-label="特色分類">
-      <div class="nx-featnav__wrap">
-        <div class="nx-featnav__row"></div>
-        <button class="nx-featnav__more" data-featmore>更多 <span class="chev">▾</span></button>
-      </div>
-    </nav>
-
-    <!-- 4 · 特色分類區段（JS 渲染）-->
-    <div id="nx-features"></div>
-
-    <!-- 6 · 重點比較 -->
-    <div class="wf-container nx-blk" style="padding: 48px 0px 48px 18px">
-      <div class="nx-sechead">
-        <span class="wf-eyebrow">COMPARE</span>
-        <h2 class="wf-h2">車型比較</h2>
-        <p class="wf-body">各等級重點不同之處 · 左右滑動瀏覽</p>
-      </div>
-      <div id="nx-compare"></div>
-    </div>
-
-    <!-- 7 · 規格表 -->
-    <section class="nx-stage-grey">
-      <div class="wf-container nx-blk">
-        <div class="nx-sechead">
-          <span class="wf-eyebrow">SPECIFICATIONS</span>
-          <h2 class="wf-h2">規格表</h2>
-          <p class="wf-body">可切換「僅顯示差異」· 進階規格可收合</p>
-        </div>
-        <div id="nx-spec"></div>
-      </div>
-    </section>
-
-    <!-- 8 · 配備表 -->
-    <div class="wf-container nx-blk" style="padding: 48px 18px">
-      <div class="nx-sechead">
-        <span class="wf-eyebrow">EQUIPMENT</span>
-        <h2 class="wf-h2">配備表</h2>
-        <p class="wf-body">選擇車型篩選配備 · 依分類展開檢視</p>
-      </div>
-      <div class="nx-eqfilter" id="nx-equip-filter"></div>
-      <div id="nx-equip"></div>
-    </div>
-
-    <!-- 9 · FAQ -->
-    <section class="nx-stage-grey">
-      <div class="wf-container nx-blk" style="padding: 48px 18px">
-        <div class="nx-sechead">
-          <span class="wf-eyebrow">FAQ</span>
-          <h2 class="wf-h2">車款 FAQ</h2>
-          <p class="wf-body">選擇分類 · 點擊問題展開解答</p>
-        </div>
-        <div id="nx-faq"></div>
-      </div>
-    </section>
-
-    <!-- 10 · 車主手冊下載 -->
-    <div class="wf-container nx-blk">
-      <div class="nx-manual">
-        <div>
-          <span class="wf-eyebrow">OWNER'S MANUAL</span>
-          <h3 class="wf-h3" style="margin-top:8px">車主手冊與型錄下載</h3>
-          <p class="wf-body" style="margin-top:6px">NX 車主手冊、規格型錄與交車輔助說明，PDF 隨時取用。</p>
-        </div>
-        <div class="nx-manual__actions">
-          <button class="wf-btn wf-btn--secondary">規格型錄 ↓</button>
-          <button class="wf-btn wf-btn--secondary">車主手冊 ↓</button>
-          <button class="wf-btn wf-btn--ghost">交車輔助說明 ↓</button>
-        </div>
-      </div>
-    </div>
 
     <!-- FOOTER -->
     <footer class="wf-footer">
-      <button class="nx-sitemap__toggle" data-sitemap-toggle aria-expanded="true">
-        <span class="wf-eyebrow">SITEMAP · 網站地圖</span>
-        <span class="chev">▴</span>
-      </button>
       <div class="wf-footer__links" data-sitemap>
-        <ul><li>購車優惠</li><li>試乘・諮詢</li><li>據點查詢</li><li>導購科技展廳</li><li>認證中古車</li></ul>
-        <ul><li>品牌介紹</li><li>創新科技</li><li>榮耀里程碑</li><li>質感生活誌</li></ul>
-        <ul><li>車主專屬回饋</li><li>延長保證</li><li>服務特色</li><li>保養計劃</li></ul>
-        <ul><li>原廠機油</li><li>無痛換胎</li><li>鈑噴服務</li></ul>
-        <ul><li>最新消息</li><li>車主專區</li></ul>
+        <ul><li>購車優惠</li><li>試乘・諮詢</li><li>據點查詢</li><li>尊榮科技展演</li><li>認證中古車</li><li>聯絡我們</li></ul>
+        <ul><li>品牌介紹</li><li>創新科技</li><li>駕馭樂趣</li><li>榮耀里程碑</li></ul>
+        <ul><li>NX</li><li>RX</li><li>ES</li><li>LM</li><li>LBX</li></ul>
+        <ul><li>售後服務</li><li>保固資訊</li><li>原廠精品</li></ul>
+        <ul><li>最新消息</li><li>車主專區</li><li>購車和泰Pay支付</li></ul>
       </div>
       <div class="wf-footer__bar">
+        <button class="wf-footer__top" data-backtotop aria-label="回到頂端"><span class="chev">↑</span><span class="t">TOP</span></button>
         <div class="wf-footer__legal"><a>全球 LEXUS</a><a>隱私權條款</a><a>車輛買賣契約書</a></div>
         <div class="wf-footer__social"><span class="wf-icon">L</span><span class="wf-icon">◎</span><span class="wf-icon">f</span><span class="wf-icon">▶</span></div>
         <span class="wf-footer__copy">© HOTAI MOTOR CO.,LTD.</span>
       </div>
     </footer>
 
-    <!-- 11 · FAB · 固定底部三等分 -->
-    <div class="nx-fab" data-screen-label="FAB" style="grid-template-columns:repeat(2,1fr)">
-      <button class="nx-fab__btn">購車優惠</button>
-      <button class="nx-fab__btn nx-fab__btn--primary">預約試乘</button>
-    </div>
-
   </div>
 </div>
 
 <div id="tweaks-root"></div>
 
-<!-- 裝置切換 -->
+<!-- 裝置切換（與車款頁共用 localStorage 鍵，跨頁保留選擇）-->
 <script>
   window.WF_WIDTHS = { mobile: 390, tablet: 834, desktop: 1440 };
   window.__wf = { device: 'mobile', fit: true };
@@ -177,31 +132,17 @@
     canvas.style.width = w + 'px';
     var avail = stage.clientWidth - 48, scale = (fit && w > avail) ? (avail / w) : 1;
     canvas.style.zoom = scale;
-    var bar = document.getElementById('wf-devicebar');
-    if (bar) { bar.querySelector('[data-dev]').textContent = dev.toUpperCase(); bar.querySelector('[data-w]').textContent = w + 'px'; }
-    if (window.NXRecalc) window.NXRecalc();
     try { localStorage.setItem('wf-nx-device', dev); localStorage.setItem('wf-nx-fit', fit ? '1' : '0'); } catch(e){}
   };
   window.__wf.device = wfReadLS('wf-nx-device', 'mobile');
   window.__wf.fit = wfReadLS('wf-nx-fit', '1') !== '0';
   window.wfApply();
   window.addEventListener('resize', window.wfApply);
-
-  // 頁尾 SITEMAP 展開／收起
-  (function () {
-    var btn = document.querySelector('[data-sitemap-toggle]');
-    var map = document.querySelector('[data-sitemap]');
-    if (btn && map) btn.addEventListener('click', function () {
-      var open = btn.getAttribute('aria-expanded') !== 'false';
-      btn.setAttribute('aria-expanded', open ? 'false' : 'true');
-      map.classList.toggle('is-collapsed', open);
-      btn.querySelector('.chev').textContent = open ? '▾' : '▴';
-    });
-  })();
+  // 回到頂端
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-backtotop]'); if (t) window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 </script>
-
-<script src="nx-assets/nx-data.js"></script>
-<script src="nx-assets/nx-app.js"></script>
 
 <!-- Tweaks -->
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -210,24 +151,17 @@
 <script type="text/babel" src="nx-assets/tweaks-panel.jsx"></script>
 <script type="text/babel">
   function App() {
-    const init = { device: window.__wf.device, fitWidth: window.__wf.fit, showCharge: true, showLink: true };
+    const init = { device: window.__wf.device, fitWidth: window.__wf.fit };
     const [t, setTweak] = useTweaks(init);
     React.useEffect(() => { window.__wf.device = t.device; window.__wf.fit = t.fitWidth; window.wfApply(); }, [t.device, t.fitWidth]);
-    React.useEffect(() => {
-      window.NXState.showCharge = t.showCharge; window.NXState.showLink = t.showLink;
-      if (window.NXRebuildFeatures) window.NXRebuildFeatures();
-    }, [t.showCharge, t.showLink]);
     return (
       <TweaksPanel title="Tweaks">
-        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>VERSION</span><b>v1.2</b></div>
+        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>首頁（占位）</span><b>v1.0</b></div>
         <TweakSection label="Device · 裝置尺寸" />
         <TweakRadio label="Viewport" value={t.device}
           options={[{ value: 'mobile', label: '手機' }, { value: 'tablet', label: '平板' }, { value: 'desktop', label: '桌機' }]}
           onChange={(v) => setTweak('device', v)} />
         <TweakToggle label="Fit · 縮放至視窗" value={t.fitWidth} onChange={(v) => setTweak('fitWidth', v)} />
-        <TweakSection label="條件分類 · 依車型配備" />
-        <TweakToggle label="顯示「充電」分類" value={t.showCharge} onChange={(v) => setTweak('showCharge', v)} />
-        <TweakToggle label="顯示「Lexus Link」分類" value={t.showLink} onChange={(v) => setTweak('showLink', v)} />
         <div className="wf-anno" style={{ padding: '8px 2px 2px', lineHeight: 1.7 }}>手機 <b>390</b> · 平板 <b>834</b> · 桌機 <b>1440</b></div>
       </TweaksPanel>
     );
