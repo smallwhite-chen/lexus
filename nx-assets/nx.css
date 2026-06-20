@@ -422,6 +422,37 @@ body { margin: 0; }
 .nx-fab__btn:hover { background: var(--wf-fill); }
 .nx-fab__btn--primary:hover { background: var(--wf-accent-700); }
 
+/* 平板＆桌機：FAB 改靠左側邊緣垂直排列 */
+.wf-canvas[data-device="tablet"] .nx-fab,
+.wf-canvas[data-device="desktop"] .nx-fab {
+  position: fixed;
+  left: 0; top: 50%; bottom: auto;
+  transform: translateY(-50%);
+  width: auto;
+  grid-template-columns: 1fr !important;
+  border-top: 0;
+  border-right: 1px solid var(--wf-line);
+  border-radius: 0 var(--wf-r) var(--wf-r) 0;
+  box-shadow: 8px 0 24px -12px rgba(20,24,30,.25);
+}
+.wf-canvas[data-device="tablet"] .nx-fab__btn,
+.wf-canvas[data-device="desktop"] .nx-fab__btn {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 6px;
+  width: 56px;
+  height: auto;
+  min-height: 0;
+  padding: 22px 0;
+  gap: 0;
+  border-right: 0;
+  border-bottom: 1px solid var(--wf-line-2);
+}
+.wf-canvas[data-device="tablet"] .nx-fab__btn:last-child,
+.wf-canvas[data-device="desktop"] .nx-fab__btn:last-child {
+  border-bottom: 0;
+}
+
 /* ============================================================
    Lightbox
    ============================================================ */

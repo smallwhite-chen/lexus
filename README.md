@@ -1,15 +1,21 @@
-# LEXUS 官網原型 · 部署包
+# LEXUS 官網原型 · 部署包 · v1.4
 
 靜態網站，可直接部署到 GitHub Pages，無需建置（no build step）。
 
 ## 結構
 ```
-index.html      首頁（占位）
+index.html      首頁（重點車款／購車優惠／最新消息／全車系入口）
 nx.html         NX 車款介紹頁
 nx-assets/      共用 JS / CSS
 ds/             設計系統樣式（Lexus Wireframe DS）
 .nojekyll       關閉 GitHub Pages 的 Jekyll（保留底線開頭檔案）
 ```
+
+## 本版更新 · v1.4
+- FAB 固定 CTA：平板／桌機改為**靠畫布左緣的垂直列**，按鈕文字**直書**（一字一行）；Tweaks 切換裝置時即時跟隨重新定位；手機維持底部橫列。
+- 首頁／車款頁 CTA 文案統一為「試乘諮詢」。
+- 首頁 Hero 移除疊字，改為純情境影片佔位。
+- 部署首頁由占位頁更新為實際首頁版型。
 
 ## 部署到 GitHub Pages
 1. 把本資料夾「裡面的內容」放到 repo 根目錄（讓 `index.html` 位於 repo 最上層）。

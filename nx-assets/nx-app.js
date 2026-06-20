@@ -194,6 +194,11 @@
     }
     function maxScroll() { return Math.max(0, track.scrollWidth - viewport.clientWidth); }
     function apply(animate = true) {
+      // 寬度足夠完整呈現所有卡片時：置中、隱藏下方切換列
+      const fits = maxScroll() <= 1;
+      track.style.justifyContent = fits ? 'center' : '';
+      nav.style.display = fits ? 'none' : '';
+      if (fits) index = 0;
       track.style.transition = animate ? 'transform .42s cubic-bezier(.4,0,.1,1)' : 'none';
       const t = Math.min(index * step(), maxScroll());
       track.style.transform = 'translateX(' + (-t) + 'px)';
@@ -623,6 +628,13 @@
       document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCatMenu(); });
     }
 
+    // 寬度足夠（按鈕未溢出）時自動隱藏「更多」
+    updateFeatMore();
+    if (!buildFeatNav._resize) {
+      buildFeatNav._resize = true;
+      window.addEventListener('resize', updateFeatMore);
+    }
+
     if (spyObs) spyObs.disconnect();
     spyObs = new IntersectionObserver(entries => {
       entries.forEach(en => {
@@ -640,6 +652,17 @@
     }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
     feats.forEach(f => { const s = $('#feat-' + f.id); if (s) spyObs.observe(s); });
     ['nx-spec-section', 'nx-equip-section'].forEach(id => { const s = $('#' + id); if (s) spyObs.observe(s); });
+  }
+
+  function updateFeatMore() {
+    const nav = $('#nx-featnav'); if (!nav) return;
+    const inner = $('.nx-featnav__row', nav);
+    const moreBtn = $('[data-featmore]', nav);
+    if (!inner || !moreBtn) return;
+    // 容許 1px 誤差：未溢出則隱藏「更多」
+    const overflow = inner.scrollWidth - inner.clientWidth > 1;
+    if (!overflow) { moreBtn.style.display = 'none'; closeCatMenu(); }
+    else { moreBtn.style.display = ''; }
   }
 
   function toggleCatMenu() {

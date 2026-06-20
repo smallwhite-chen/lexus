@@ -1,0 +1,136 @@
+/* ============================================================
+   LEXUS 官網 · 首頁 home.css
+   依首頁資訊架構（定稿）：Hero → 重點車款 → 購車優惠 →
+   車主尊榮回饋 → 最新消息 → 全車系列表入口 → Footer ＋ 固定 CTA
+   僅用設計系統灰階；佈局沿用 wf-/nx- 既有樣式
+   ============================================================ */
+
+/* 區塊節奏 */
+.home-blk { padding-block: 76px; }
+.home-blk--tight { padding-block: 56px; }
+.wf-canvas[data-device="tablet"] .home-blk { padding-block: 60px; }
+.wf-canvas[data-device="tablet"] .home-blk--tight { padding-block: 48px; }
+.wf-canvas[data-device="mobile"] .home-blk { padding-block: 48px; }
+.wf-canvas[data-device="mobile"] .home-blk--tight { padding-block: 40px; }
+.home-grey { background: var(--wf-stage); border-top: 1px solid var(--wf-line); border-bottom: 1px solid var(--wf-line); }
+
+/* 區段標頭：eyebrow + 中文標題 + 選配說明／連結 */
+.home-sechead { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 34px; }
+.home-sechead__l { display: flex; flex-direction: column; gap: 10px; }
+.home-sechead__cn { font-size: 30px; font-weight: 600; letter-spacing: -.005em; color: var(--wf-ink); line-height: 1.1; }
+.home-sechead__cn--outline { font-family: var(--wf-mono); font-weight: 500; letter-spacing: .04em; color: transparent; -webkit-text-stroke: 1.2px var(--wf-line-strong); }
+.home-sechead__desc { font-size: 14px; color: var(--wf-ink-2); max-width: 460px; line-height: 1.6; }
+.wf-canvas[data-device="mobile"] .home-sechead { flex-direction: column; align-items: flex-start; gap: 14px; margin-bottom: 26px; }
+.home-sechead--inline { align-items: center; }
+.wf-canvas[data-device="mobile"] .home-sechead--inline { flex-direction: row; align-items: center; gap: 16px; }
+.wf-canvas[data-device="mobile"] .home-sechead__cn { font-size: 24px; }
+
+/* ============================================================
+   1 · HERO（情境影片 · 不輪播）
+   ============================================================ */
+.home-hero { position: relative; border-bottom: 1px solid var(--wf-line); }
+.home-hero__media { aspect-ratio: 16/7; border-left: 0; border-right: 0; border-top: 0; }
+.wf-canvas[data-device="tablet"] .home-hero__media { aspect-ratio: 16/9; }
+.wf-canvas[data-device="mobile"] .home-hero__media { aspect-ratio: 3/4; }
+.home-hero__overlay {
+  position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end;
+  gap: 16px; padding: 0 64px 56px;
+}
+.wf-canvas[data-device="mobile"] .home-hero__overlay { padding: 0 18px 44px; }
+.home-hero__eyebrow { font-family: var(--wf-mono); font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: rgba(255,255,255,.78); }
+.home-hero__title { font-size: 52px; font-weight: 300; line-height: 1.04; letter-spacing: .01em; color: #fff; max-width: 16ch; text-wrap: balance; }
+.wf-canvas[data-device="tablet"] .home-hero__title { font-size: 42px; }
+.wf-canvas[data-device="mobile"] .home-hero__title { font-size: 32px; }
+.home-hero__sub { font-size: 16px; color: rgba(255,255,255,.82); max-width: 40ch; line-height: 1.6; }
+.home-hero__cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+/* hero 右側直書索引 rail（沿用官網語彙，純裝飾結構）*/
+.home-hero__rail { position: absolute; right: 24px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 24px; align-items: center; }
+.home-hero__rail span { writing-mode: vertical-rl; font-family: var(--wf-mono); font-size: 11px; letter-spacing: .18em; color: rgba(255,255,255,.7); }
+.wf-canvas[data-device="mobile"] .home-hero__rail { display: none; }
+
+/* ============================================================
+   2 · 重點車款（3–4 款）
+   ============================================================ */
+.home-lineup { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.wf-canvas[data-device="tablet"] .home-lineup { grid-template-columns: repeat(2, 1fr); gap: 22px 20px; }
+.wf-canvas[data-device="mobile"] .home-lineup { grid-template-columns: 1fr; gap: 26px; }
+.home-model { display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: inherit; }
+.home-model__media { aspect-ratio: 4/3; transition: border-color .15s; }
+.home-model:hover .home-model__media { border-color: var(--wf-ink); }
+.home-model__row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 2px; }
+.home-model__name { font-family: var(--wf-mono); font-size: 32px; font-weight: 500; letter-spacing: .03em; line-height: 1; color: var(--wf-ink); }
+.home-model__desc { font-size: 14px; color: var(--wf-ink-2); line-height: 1.55; }
+.home-model__cta { align-self: flex-end; margin-top: 2px; font-family: var(--wf-mono); font-size: 11px; letter-spacing: .14em; color: var(--wf-accent); }
+.home-model:hover .home-model__cta { text-decoration: underline; text-underline-offset: 3px; }
+.home-model__tags { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+/* ============================================================
+   3 · 購車優惠（促購帶）
+   ============================================================ */
+.home-offer { display: grid; grid-template-columns: 1.05fr 1fr; border: 1px solid var(--wf-line); border-radius: var(--wf-r-lg); overflow: hidden; background: var(--wf-paper); }
+.wf-canvas[data-device="mobile"] .home-offer { grid-template-columns: 1fr; }
+.home-offer__body { display: flex; flex-direction: column; gap: 16px; padding: 44px 48px; }
+.wf-canvas[data-device="mobile"] .home-offer__body { padding: 32px 24px; }
+.home-offer__title { font-size: 30px; font-weight: 600; line-height: 1.12; color: var(--wf-ink); }
+.wf-canvas[data-device="mobile"] .home-offer__title { font-size: 24px; }
+.home-offer__desc { font-size: 15px; color: var(--wf-ink-2); line-height: 1.65; max-width: 42ch; }
+.home-offer__meta { font-family: var(--wf-mono); font-size: 11px; letter-spacing: .08em; color: var(--wf-muted); }
+.home-offer__cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+.home-offer__media { border: 0; border-left: 1px solid var(--wf-line); min-height: 280px; }
+.wf-canvas[data-device="mobile"] .home-offer__media { border-left: 0; border-top: 1px solid var(--wf-line); aspect-ratio: 16/10; min-height: 0; }
+/* 次要優惠列（兩張小卡）*/
+.home-offer-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.wf-canvas[data-device="mobile"] .home-offer-mini { grid-template-columns: 1fr; }
+.home-minicard { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 24px; border: 1px solid var(--wf-line); border-radius: var(--wf-r); background: var(--wf-paper); text-decoration: none; color: inherit; transition: border-color .15s; }
+.home-minicard:hover { border-color: var(--wf-ink); }
+.home-minicard__t { display: flex; flex-direction: column; gap: 5px; }
+.home-minicard__t b { font-size: 16px; font-weight: 600; color: var(--wf-ink); }
+.home-minicard__t span { font-size: 13px; color: var(--wf-ink-2); }
+
+/* ============================================================
+   4 · 車主尊榮回饋（朝準買家 · 擁車保證）
+   ============================================================ */
+.home-own { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--wf-line); border-radius: var(--wf-r-lg); overflow: hidden; background: var(--wf-paper); }
+.wf-canvas[data-device="tablet"] .home-own { grid-template-columns: repeat(3, 1fr); }
+.wf-canvas[data-device="mobile"] .home-own { grid-template-columns: 1fr; }
+.home-own__cell { display: flex; flex-direction: column; gap: 12px; padding: 34px 30px; border-right: 1px solid var(--wf-line); }
+.home-own__cell:last-child { border-right: 0; }
+.wf-canvas[data-device="mobile"] .home-own__cell { border-right: 0; border-bottom: 1px solid var(--wf-line); }
+.wf-canvas[data-device="mobile"] .home-own__cell:last-child { border-bottom: 0; }
+.home-own__ic { width: 34px; height: 34px; border: 1px solid var(--wf-line-strong); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-family: var(--wf-mono); font-size: 11px; letter-spacing: .04em; color: var(--wf-accent); }
+.home-own__label { font-family: var(--wf-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--wf-muted); }
+.home-own__h { font-size: 18px; font-weight: 600; color: var(--wf-ink); }
+.home-own__p { font-size: 14px; color: var(--wf-ink-2); line-height: 1.6; }
+
+/* ============================================================
+   5 · 最新消息（新車上市／全球發表會）
+   ============================================================ */
+.home-news { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.wf-canvas[data-device="tablet"] .home-news { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.wf-canvas[data-device="mobile"] .home-news { grid-template-columns: 1fr; gap: 26px; }
+/* 最新消息卡：分類標籤移至日期右側、日期與標題間距縮小 */
+.home-newscard .wf-card__main { gap: 14px; }
+.home-newscard .wf-card__text { gap: 6px; }
+.home-newscard__meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.home-newscard__tag { font-family: var(--wf-mono); font-size: 11px; letter-spacing: .12em; color: var(--wf-accent); background: var(--wf-accent-soft); border: 1px solid var(--wf-accent-line); padding: 2px 9px; border-radius: var(--wf-r-pill); }
+
+/* ============================================================
+   6 · 全車系列表入口（輕量索引）
+   ============================================================ */
+.home-dir { display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; }
+.wf-canvas[data-device="tablet"] .home-dir { grid-template-columns: repeat(3, 1fr); row-gap: 30px; }
+.wf-canvas[data-device="mobile"] .home-dir { grid-template-columns: repeat(2, 1fr); row-gap: 26px; }
+.home-dir__col { display: flex; flex-direction: column; gap: 14px; }
+.home-dir__list { display: flex; flex-direction: column; gap: 10px; }
+.home-dir__m { font-family: var(--wf-mono); font-size: 19px; font-weight: 500; letter-spacing: .04em; color: var(--wf-ink); text-decoration: none; transition: color .15s; }
+.home-dir__m:hover { color: var(--wf-accent); }
+.home-dir__m.is-concept { font-family: var(--wf-sans); font-size: 13px; font-weight: 400; color: var(--wf-ink-2); line-height: 1.45; }
+/* 認證中古車：買家路徑，較一般 footer 連結稍顯眼 */
+.home-secondary { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--wf-line); }
+.home-secondary__a { display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; border: 1px solid var(--wf-line); border-radius: var(--wf-r); font-size: 14px; color: var(--wf-ink); text-decoration: none; transition: border-color .15s, color .15s; }
+.home-secondary__a:hover { border-color: var(--wf-ink); }
+.home-secondary__a.is-buyer { border-color: var(--wf-accent-line); background: var(--wf-accent-soft); color: var(--wf-accent); font-weight: 500; }
+.home-secondary__a .ar { font-family: var(--wf-mono); font-size: 12px; }
+
+/* 固定 CTA：沿用 nx-fab，首頁為三等分（購車優惠／預約試乘／據點查詢）*/
+.home-fab__btn .ic { font-size: 10px; }

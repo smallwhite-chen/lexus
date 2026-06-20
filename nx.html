@@ -138,7 +138,7 @@
     <!-- 11 · FAB · 固定底部三等分 -->
     <div class="nx-fab" data-screen-label="FAB" style="grid-template-columns:repeat(2,1fr)">
       <button class="nx-fab__btn">購車優惠</button>
-      <button class="nx-fab__btn nx-fab__btn--primary">預約試乘</button>
+      <button class="nx-fab__btn nx-fab__btn--primary">試乘諮詢</button>
     </div>
 
   </div>
@@ -159,12 +159,27 @@
     canvas.style.width = w + 'px';
     var avail = stage.clientWidth - 48, scale = (fit && w > avail) ? (avail / w) : 1;
     canvas.style.zoom = scale;
+    if (window.__wfFabFollow) window.__wfFabFollow();
     var bar = document.getElementById('wf-devicebar');
     if (bar) { bar.querySelector('[data-dev]').textContent = dev.toUpperCase(); bar.querySelector('[data-w]').textContent = w + 'px'; }
     if (window.wfSitemapSync) window.wfSitemapSync();
     if (window.NXRecalc) window.NXRecalc();
     if (window.NXConfigurator) window.NXConfigurator.setDevice(dev);
     try { localStorage.setItem('wf-nx-device', dev); localStorage.setItem('wf-nx-fit', fit ? '1' : '0'); } catch(e){}
+  };
+  // FAB（平板／桌機左側垂直列）鎖定畫布左緣；裝置切換含 .28s 過渡，逐幀跟隨
+  window.__wfFabFollow = function () {
+    var canvas = document.getElementById('wf-canvas'); if (!canvas) return;
+    var fab = canvas.querySelector('.nx-fab'); if (!fab) return;
+    function place() {
+      if (window.__wf.device === 'mobile') { fab.style.left = ''; return; }
+      var z = parseFloat(getComputedStyle(canvas).zoom) || 1;
+      fab.style.left = (canvas.getBoundingClientRect().left / z) + 'px';
+    }
+    place();
+    if (window.__wfFabRAF) cancelAnimationFrame(window.__wfFabRAF);
+    var t0 = performance.now();
+    (function loop() { place(); if (performance.now() - t0 < 420) window.__wfFabRAF = requestAnimationFrame(loop); })();
   };
   window.__wf.device = wfReadLS('wf-nx-device', 'mobile');
   window.__wf.fit = wfReadLS('wf-nx-fit', '1') !== '0';
@@ -222,7 +237,7 @@
     }, [t.showCharge, t.showLink]);
     return (
       <TweaksPanel title="Tweaks">
-        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>VERSION</span><b>v1.3</b></div>
+        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>VERSION</span><b>v1.4</b></div>
         <TweakSection label="Device · 裝置尺寸" />
         <TweakRadio label="Viewport" value={t.device}
           options={[{ value: 'mobile', label: '手機' }, { value: 'tablet', label: '平板' }, { value: 'desktop', label: '桌機' }]}
