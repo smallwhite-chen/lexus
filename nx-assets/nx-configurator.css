@@ -223,3 +223,144 @@
 .nxc-overlay[data-device="tablet"] .nxc-reveal__info,
 .nxc-overlay[data-device="desktop"] .nxc-reveal__info { flex: 1 1 auto; overflow-y: auto; }
 .nxc-overlay[data-device="desktop"] .nxc-reveal__stage .nxc-canvas { aspect-ratio: 16/10; }
+
+/* ============================================================
+   車款頁 FLAT 直選（第一層）
+   手機：大圖 + 選項按鈕 + BottomSheet（DONE 才換圖）
+   平板／桌機：左大圖 + 縮圖列；右側手風琴（一次一張，即時換圖）
+   ============================================================ */
+.nxc-flat { display: flex; flex-direction: column; gap: 16px; max-width: 760px; margin: 0 auto; }
+.nxc-flat__left { display: flex; flex-direction: column; gap: 12px; }
+.nxc-flat__right { display: flex; flex-direction: column; gap: 16px; }
+
+/* 舞台大圖 */
+.nxc-flat__stage { display: flex; flex-direction: column; }
+.nxc-flat__stage .nxc-stage-wrap { gap: 0; }
+.nxc-flat__stage .nxc-canvas { aspect-ratio: 16/11; }
+.nxc-flat__viewtog { position: absolute; left: 12px; bottom: 12px; z-index: 4; display: inline-flex; gap: 2px;
+  background: var(--wf-paper); border: 1px solid var(--wf-line); border-radius: var(--wf-r-pill); padding: 3px; }
+.nxc-flat__viewtog button { border: 0; background: none; cursor: pointer; font-size: 12px; color: var(--wf-ink-2);
+  padding: 5px 13px; border-radius: var(--wf-r-pill); line-height: 1; }
+.nxc-flat__viewtog button[aria-selected="true"] { background: var(--wf-accent); color: #fff; }
+.nxc-flat__zoombtn { position: absolute; right: 12px; bottom: 12px; z-index: 4; display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; color: var(--wf-ink-2);
+  background: var(--wf-paper); border: 1px solid var(--wf-line); border-radius: var(--wf-r-pill); cursor: pointer; }
+.nxc-flat__zoombtn:hover { border-color: var(--wf-ink); color: var(--wf-ink); }
+
+/* 影像導覽（手機：箭頭＋圓點｜桌機：縮圖列）*/
+.nxc-flat__imgnav { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.nxc-flat__arrow { flex: 0 0 auto; width: 32px; height: 32px; border: 1px solid var(--wf-line); background: var(--wf-paper);
+  border-radius: 50%; cursor: pointer; font-size: 16px; line-height: 1; color: var(--wf-ink); display: inline-flex; align-items: center; justify-content: center; }
+.nxc-flat__arrow:hover { border-color: var(--wf-ink); }
+.nxc-flat__dots { display: flex; align-items: center; gap: 8px; }
+.nxc-flat__dot { width: 8px; height: 8px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+  background: var(--wf-line-strong); opacity: .55; transition: opacity .15s, width .2s; }
+.nxc-flat__dot.is-on { opacity: 1; width: 22px; border-radius: 5px; background: var(--wf-accent); }
+
+/* 桌機縮圖列 */
+.nxc-imgnav__nav { flex: 0 0 auto; width: 32px; height: 32px; border: 1px solid var(--wf-line); background: var(--wf-paper);
+  border-radius: 50%; cursor: pointer; font-size: 16px; line-height: 1; color: var(--wf-ink); display: inline-flex; align-items: center; justify-content: center; }
+.nxc-imgnav__nav:hover { border-color: var(--wf-ink); }
+.nxc-imgnav__vp { flex: 1 1 auto; min-width: 0; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+.nxc-imgnav__vp::-webkit-scrollbar { display: none; }
+.nxc-imgnav__track { display: flex; gap: 8px; padding: 2px; }
+.nxc-thumb2 { flex: 0 0 auto; width: 96px; padding: 0; border: 1px solid var(--wf-line); background: var(--wf-paper);
+  border-radius: var(--wf-r-sm); cursor: pointer; overflow: hidden; transition: border-color .15s; }
+.nxc-thumb2:hover { border-color: var(--wf-ink); }
+.nxc-thumb2.is-on { border-color: var(--wf-accent); box-shadow: inset 0 0 0 1px var(--wf-accent); }
+.nxc-thumb2__img { display: block; width: 100%; aspect-ratio: 16/11; position: relative; }
+
+/* ---- 手機：選項按鈕 ---- */
+.nxc-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.nxc-btn { position: relative; display: flex; flex-direction: column; gap: 4px; text-align: left;
+  border: 1px solid var(--wf-line); background: var(--wf-paper); border-radius: var(--wf-r);
+  padding: 12px 32px 12px 14px; cursor: pointer; transition: border-color .15s; }
+.nxc-btn:hover { border-color: var(--wf-ink); }
+.nxc-btn--wide { grid-column: 1 / -1; }
+.nxc-btn__lbl { font-size: 12px; color: var(--wf-ink-2); }
+.nxc-btn__val { font-size: 15px; font-weight: 600; color: var(--wf-ink); line-height: 1.25; }
+.nxc-btn__chev { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--wf-muted); }
+.nxc-flat__zoomfull { width: 100%; justify-content: center; }
+
+/* ---- 桌機／平板：手風琴 ---- */
+.nxc-flat__controls { display: flex; flex-direction: column; }
+.nxc-flat[data-mode="split"] .nxc-flat__controls { gap: 10px; }
+.nxc-acc { border: 1px solid var(--wf-line); border-radius: var(--wf-r); background: var(--wf-paper); overflow: hidden; }
+.nxc-acc__head { width: 100%; display: flex; align-items: center; gap: 12px; padding: 14px 16px; text-align: left;
+  background: var(--wf-paper); border: 0; cursor: pointer; }
+.nxc-acc__head:hover { background: var(--wf-stage); }
+.nxc-acc__htext { display: flex; flex-direction: column; gap: 2px; }
+.nxc-acc__htext h4 { font-size: 16px; font-weight: 600; margin: 0; color: var(--wf-ink); }
+.nxc-acc__hval { margin-left: auto; font-size: 13px; color: var(--wf-ink-2); text-align: right; }
+.nxc-acc__chev { flex: 0 0 auto; font-size: 12px; color: var(--wf-muted); transition: transform .2s; }
+.nxc-acc.is-open .nxc-acc__chev { transform: rotate(180deg); }
+.nxc-acc.is-open .nxc-acc__head { border-bottom: 1px solid var(--wf-line); }
+.nxc-acc__body:not(:empty) { padding: 14px 16px; }
+.nxc-acc__body::-webkit-scrollbar { width: 8px; }
+.nxc-acc__body::-webkit-scrollbar-thumb { background: var(--wf-line-strong); border-radius: 4px; }
+.nxc-acc__body { scrollbar-width: thin; }
+
+/* ---- 共用選項卡（sheet + 手風琴）---- */
+.nxc-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.nxc-opts--version { grid-template-columns: 1fr; }
+.nxc-opt { position: relative; text-align: left; border: 1px solid var(--wf-line); background: var(--wf-paper);
+  border-radius: var(--wf-r); padding: 10px; cursor: pointer; display: flex; flex-direction: column; gap: 7px; transition: border-color .15s; }
+.nxc-opt:hover { border-color: var(--wf-ink); }
+.nxc-opt[aria-selected="true"] { border-color: var(--wf-accent); box-shadow: inset 0 0 0 1px var(--wf-accent); }
+.nxc-opt__name { font-size: 13px; font-weight: 500; color: var(--wf-ink); }
+.nxc-opt__sub { font-family: var(--wf-mono); font-size: 10px; line-height: 1.45; color: var(--wf-muted); }
+.nxc-opt__vtop { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.nxc-opt__diff { font-size: 12px; line-height: 1.45; color: var(--wf-ink-2); }
+.nxc-opt__price { font-family: var(--wf-mono); font-size: 12px; color: var(--wf-ink); margin-top: 2px; }
+.nxc-opt__block { width: 100%; height: 48px; border-radius: var(--wf-r-sm); border: 1px solid var(--wf-line-strong); }
+.nxc-opt__img { display: block; width: 100%; aspect-ratio: 4/3; position: relative; }
+
+/* ---- BottomSheet（手機）---- */
+.nxc-sheet { position: fixed; inset: 0; z-index: 86; display: flex; justify-content: center;
+  background: rgba(20,24,30,.5); opacity: 0; transition: opacity .25s ease; }
+.nxc-sheet.is-open { opacity: 1; }
+.nxc-sheet__col { width: min(var(--nxc-w, 390px), 100vw); display: flex; flex-direction: column; justify-content: flex-end; }
+.nxc-sheet__panel { background: var(--wf-paper); border-radius: 14px 14px 0 0; max-height: 82%; display: flex; flex-direction: column;
+  transform: translateY(100%); transition: transform .3s cubic-bezier(.32,.72,0,1); }
+.nxc-sheet.is-open .nxc-sheet__panel { transform: translateY(0); }
+.nxc-sheet__head { position: relative; display: flex; align-items: center; gap: 10px; padding: 18px 16px 12px; border-bottom: 1px solid var(--wf-line); }
+.nxc-sheet__grab { position: absolute; top: 7px; left: 50%; transform: translateX(-50%); width: 36px; height: 4px; border-radius: 2px; background: var(--wf-line-strong); }
+.nxc-sheet__htext { display: flex; flex-direction: column; gap: 2px; }
+.nxc-sheet__htext h4 { font-size: 16px; font-weight: 600; margin: 0; color: var(--wf-ink); }
+.nxc-sheet__x { margin-left: auto; width: 34px; height: 34px; border: 1px solid var(--wf-line); background: var(--wf-paper);
+  border-radius: var(--wf-r); cursor: pointer; font-size: 15px; color: var(--wf-ink); display: inline-flex; align-items: center; justify-content: center; }
+.nxc-sheet__x:hover { border-color: var(--wf-ink); }
+.nxc-sheet__body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 14px 16px; }
+.nxc-sheet__foot { flex: 0 0 auto; padding: 12px 16px; border-top: 1px solid var(--wf-line); }
+.nxc-sheet__foot .wf-btn { width: 100%; justify-content: center; }
+
+/* 平板：BottomSheet 內選項配合整體縮小，多欄排列 */
+.nxc-sheet--tablet .nxc-opts { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.nxc-sheet--tablet .nxc-opts--version { grid-template-columns: repeat(2, 1fr); }
+.nxc-sheet--tablet .nxc-opt { padding: 8px; gap: 5px; }
+.nxc-sheet--tablet .nxc-opt__name { font-size: 12px; }
+.nxc-sheet--tablet .nxc-opt__sub { font-size: 9px; }
+.nxc-sheet--tablet .nxc-opt__block { height: 38px; }
+.nxc-sheet--tablet .nxc-opt__diff { font-size: 11px; }
+.nxc-sheet--tablet .nxc-sheet__body { padding: 14px 18px; }
+
+/* 摘要 + CTA */
+.nxc-flat__summary { border-top: 1px solid var(--wf-line); padding-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+.nxc-flat__sumline { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.nxc-flat__sumline > div:first-child { min-width: 0; }
+.nxc-flat__sumbrand { font-family: var(--wf-mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--wf-muted); white-space: nowrap; }
+.nxc-flat__summodel { font-size: 22px; font-weight: 600; letter-spacing: -.01em; line-height: 1.1; color: var(--wf-ink); margin-top: 4px; white-space: nowrap; }
+.nxc-flat__sumprice { flex: 0 0 auto; font-family: var(--wf-mono); font-size: 14px; color: var(--wf-ink); white-space: nowrap; padding-top: 4px; }
+.nxc-flat__note { font-size: 13px; line-height: 1.65; color: var(--wf-ink-2); margin: 0; max-width: 46ch; }
+.nxc-flat__cta { display: flex; gap: 10px; }
+.nxc-flat__cta .wf-btn { flex: 1 1 0; justify-content: center; }
+
+/* ============================================================
+   桌機：左右分割（左大圖、右選項面板）。平板沿用手機操作方式
+   ============================================================ */
+.wf-canvas[data-device="desktop"] .nxc-flat {
+  display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 30px; align-items: start; max-width: 1180px; }
+.wf-canvas[data-device="desktop"] .nxc-flat__left { position: static; top: auto; }
+.wf-canvas[data-device="desktop"] .nxc-flat__stage .nxc-canvas { aspect-ratio: 16/10; }
+/* 桌機選項卡每列三個（縮圖類）*/
+.wf-canvas[data-device="desktop"] .nxc-opts:not(.nxc-opts--version):not(.nxc-opts--extColor) { grid-template-columns: repeat(3, 1fr); }

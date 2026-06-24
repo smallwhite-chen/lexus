@@ -54,7 +54,7 @@
     <!-- 3 · 賞車選擇器（取代 360）-->
     <section class="nx-stage-grey">
       <div class="wf-container nx-blk">
-        <div class="nx-sechead">
+        <div class="nx-sechead nx-sechead--sticky">
           <span class="wf-eyebrow">CONFIGURE</span>
           <h2 class="wf-h2">自訂我的NX</h2>
         </div>
@@ -66,7 +66,7 @@
     <nav class="nx-featnav" id="nx-featnav" aria-label="特色分類">
       <div class="nx-featnav__wrap">
         <div class="nx-featnav__row"></div>
-        <button class="nx-featnav__more" data-featmore>更多 <span class="chev">▾</span></button>
+        <button class="nx-featnav__more" data-featmore><span class="chev">▾</span></button>
       </div>
     </nav>
 
@@ -136,8 +136,9 @@
     </footer>
 
     <!-- 11 · FAB · 固定底部三等分 -->
-    <div class="nx-fab" data-screen-label="FAB" style="grid-template-columns:repeat(2,1fr)">
+    <div class="nx-fab" data-screen-label="FAB" style="grid-template-columns: repeat(3,1fr)">
       <button class="nx-fab__btn">購車優惠</button>
+      <button class="nx-fab__btn">據點查詢</button>
       <button class="nx-fab__btn nx-fab__btn--primary">試乘諮詢</button>
     </div>
 
@@ -217,7 +218,7 @@
 <script src="nx-assets/nx-app.js"></script>
 <script src="nx-assets/nx-configurator.js"></script>
 <script>
-  NXConfigurator.renderEntry('#nx-selector');
+  NXConfigurator.renderFlat('#nx-selector');
   NXConfigurator.setDevice(window.__wf.device);
 </script>
 
@@ -237,7 +238,7 @@
     }, [t.showCharge, t.showLink]);
     return (
       <TweaksPanel title="Tweaks">
-        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>VERSION</span><b>v1.4</b></div>
+        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>VERSION</span><b>v1.5</b></div>
         <TweakSection label="Device · 裝置尺寸" />
         <TweakRadio label="Viewport" value={t.device}
           options={[{ value: 'mobile', label: '手機' }, { value: 'tablet', label: '平板' }, { value: 'desktop', label: '桌機' }]}

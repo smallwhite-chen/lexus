@@ -242,7 +242,7 @@ window.NXData = (function () {
   // eq(名稱, 說明, 圖片張數, 配備此項的車型)
   const GRADES = ['NX 200', 'NX 350', 'NX 350h 旗艦', 'NX 450h+ F SPORT'];
   const equip = [
-    { cat: '外觀配備', items: [
+    { cat: '外觀', items: [
       '日間行車燈',
       '頭燈型式（近燈／遠燈）',
       '頭燈清洗器',
@@ -259,7 +259,7 @@ window.NXData = (function () {
       '後導流尾翼',
       '排氣尾管樣式',
     ]},
-    { cat: '內裝配備', items: [
+    { cat: '內裝', items: [
       'Push Start 引擎觸控啟動開關',
       '多功能資訊整合系統',
       '資訊整合系統操控介面',
@@ -377,6 +377,8 @@ window.NXData = (function () {
       { q: 'NX 目前有哪些車型可選？', a: '提供 450h+（PHEV）、350h（HEV）、350 與 200（汽油）等動力，並有 F SPORT 與旗艦等不同等級。' },
       { q: '可以線上預約試駕嗎？', a: '可透過官網或 Lexus Link App 選擇據點與時段預約，專人將與您聯繫確認。' },
       { q: '是否提供購車優惠或分期方案？', a: '不定期推出購車優惠與彈性分期方案，詳情以各據點公告為準。' },
+      { q: '如何取得 Lexus Plus App？', a: '立即下載【Lexus Plus App】：<br>iOS 版本：<a href="https://apps.apple.com/tw/app/lexus-plus/id626100497" target="_blank" rel="noopener">App Store ↗</a><br>Android 版本：<a href="https://play.google.com/store/apps/details?id=com.hotaimotor.lexusplus" target="_blank" rel="noopener">Google Play ↗</a>' },
+      { q: '【Lexus Plus App】充電站功能可啟用哪些充電站點？', a: '透過【Lexus Plus App】充電站功能可啟用全台授權 Lexus 據點充電站以及多家充電營運商，最新的站點資訊將以 Lexus Plus App「充電地圖」頁面公告為準，歡迎隨時透過 Lexus Plus App 查看最新資訊。' },
     ]},
     { cat: '充電 / 動力', items: [
       { q: 'PHEV 純電可以跑多遠？', a: 'NX 450h+ 於滿電狀態下純電續航約 76 公里，足以涵蓋多數市區通勤。' },

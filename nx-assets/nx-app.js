@@ -43,7 +43,6 @@
       card.appendChild(media);
       const body = el('div', 'nx-hl__content');
       body.innerHTML =
-        '<span class="wf-eyebrow">' + h.en + '</span>' +
         '<div class="nx-hl__big">' + (h.bigHtml || ('<b>' + h.value + '</b><span>' + h.title + '</span>')) + '</div>';
       card.appendChild(body);
       mount.appendChild(card);
@@ -126,11 +125,10 @@
       const head = el('div', 'wf-container');
       head.innerHTML =
         '<div class="nx-feat__head">' +
-          '<div class="wf-sectiontitle"><span class="word word--outline">' + f.en + '</span>' +
-          '<span class="sub">' + f.sub + '</span><span class="cn">' + f.cn + '</span></div>' +
+          '<div class="wf-sectiontitle"><span class="nx-feat__wordrow" style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap"><span class="word word--outline">' + f.en + '</span>' +
+          (f.id === 'link' ? '' : '<span class="nx-feat__cat" style="font-family:var(--wf-mono);font-size:15px;letter-spacing:.16em;color:var(--wf-ink-2)">' + f.cat + '</span>') + '</span>' +
+        '<span class="sub">' + f.sub + '</span><span class="cn">' + f.cn + '</span></div>' +
         '</div>';
-      const moreBtn = el('button', 'wf-btn wf-btn--secondary wf-btn--sm nx-feat__more', '查看詳細特色介紹 ›');
-      head.appendChild(moreBtn);
       sec.appendChild(head);
 
       const wrap = el('div', 'wf-container');
@@ -163,8 +161,6 @@
         track.appendChild(card);
       });
       wrap.appendChild(car);
-      // 單一「查看更詳細」按鈕：開啟目前所在的特色項目
-      moreBtn.addEventListener('click', () => openDetail(f.id, parseInt(car.dataset.index || '0', 10)));
 
       // nav: 左箭頭 · 頁次 · 右箭頭
       const nav = el('div', 'nx-car__nav');
@@ -448,6 +444,8 @@
      配備表（分類 accordion）
      ============================================================ */
   let equipFilter = '';
+  let equipTab = 0;
+  let equipExpanded = false;
   function renderEquip() {
     const mount = $('#nx-equip'); if (!mount) return;
     const bar = $('#nx-equip-filter');
@@ -467,64 +465,129 @@
   function paintEquip() {
     const mount = $('#nx-equip'); if (!mount) return;
     mount.innerHTML = '';
-    let total = 0;
-    D.equip.forEach((grp, gi) => {
-      total += grp.items.length;
-      const acc = el('div', 'nx-acc');
-      const head = el('button', 'nx-acc__head');
-      head.innerHTML = '<span class="nx-acc__cat">' + grp.cat + '</span>' +
-        '<span class="wf-anno">' + grp.items.length + '</span><span class="chev">▾</span>';
-      head.addEventListener('click', () => acc.classList.toggle('is-open'));
-      const body = el('div', 'nx-acc__body');
-      const list = el('div', 'nx-equip__list');
-      grp.items.forEach(name => list.appendChild(equipItem(grp.cat, name)));
-      body.appendChild(list);
-      acc.appendChild(head); acc.appendChild(body);
-      mount.appendChild(acc);
+    const groups = D.equip;
+    if (equipTab >= groups.length) equipTab = 0;
+
+    // 橫向分類列（可捲動，右側「更多」開啟分類選單）
+    const tabwrap = el('div', 'nx-eqtabs');
+    const rail = el('div', 'nx-eqtabs__rail');
+    groups.forEach((grp, gi) => {
+      const t = el('button', 'nx-eqtab' + (gi === equipTab ? ' is-active' : ''), grp.cat);
+      t.addEventListener('click', () => { equipTab = gi; equipExpanded = false; paintEquip(); });
+      rail.appendChild(t);
     });
+    const more = el('button', 'nx-eqtabs__more', '▾');
+    more.setAttribute('aria-label', '全部分類');
+    const menu = el('div', 'nx-catmenu nx-eqmenu');
+    menu.innerHTML =
+      '<span class="wf-eyebrow nx-catmenu__hd">全部分類</span>' +
+      '<div class="nx-catmenu__grid">' +
+        groups.map((grp, gi) =>
+          '<button class="nx-catmenu__item' + (gi === equipTab ? ' is-current' : '') + '" data-eqgo="' + gi + '">' +
+          '<span class="nx-catmenu__cn">' + grp.cat + '</span>' +
+          '<span class="wf-anno">' + grp.items.length + '</span></button>').join('') +
+      '</div>';
+    more.addEventListener('click', e => {
+      e.stopPropagation();
+      menu.classList.toggle('is-open');
+    });
+    menu.querySelectorAll('[data-eqgo]').forEach(b => b.addEventListener('click', () => {
+      equipTab = +b.dataset.eqgo; equipExpanded = false; paintEquip();
+    }));
+    document.addEventListener('click', function onDoc(e) {
+      if (!menu.isConnected) { document.removeEventListener('click', onDoc); return; }
+      if (!e.target.closest('.nx-eqmenu') && !e.target.closest('.nx-eqtabs__more')) menu.classList.remove('is-open');
+    });
+    tabwrap.appendChild(rail);
+    tabwrap.appendChild(more);
+    tabwrap.appendChild(menu);
+    mount.appendChild(tabwrap);
+
+    // 項目列表（縮圖 + 名稱 + 說明）
+    const grp = groups[equipTab];
+    const EQ_PREVIEW = 4;
+    const shown = equipExpanded ? grp.items : grp.items.slice(0, EQ_PREVIEW);
+    const list = el('div', 'nx-eqcards');
+    shown.forEach(name => {
+      const card = el('article', 'nx-eqcard');
+      const thumb = img(grp.cat + ' · ' + name, { ratio: '1/1' });
+      thumb.classList.add('nx-eqcard__thumb');
+      const tx = el('div', 'nx-eqcard__tx');
+      tx.innerHTML =
+        '<div class="nx-eqcard__row"><h4 class="nx-eqcard__name">' + name + '</h4><span class="nx-eqcard__go" aria-hidden="true">›</span></div>' +
+        '<p class="nx-eqcard__desc">配備說明文字，介紹此項配備的功能與使用情境，依實車與車型等級為準。</p>';
+      card.appendChild(thumb);
+      card.appendChild(tx);
+      card.addEventListener('click', () => openEquipSheet(grp.cat, name));
+      list.appendChild(card);
+    });
+    mount.appendChild(list);
+
+    // 看更多 / 收合
+    if (grp.items.length > EQ_PREVIEW) {
+      const moreWrap = el('div', 'nx-eqmore');
+      const moreBtn = el('button', 'wf-btn wf-btn--secondary',
+        equipExpanded ? '收合' : '看更多（' + (grp.items.length - EQ_PREVIEW) + '）');
+      moreBtn.addEventListener('click', () => { equipExpanded = !equipExpanded; paintEquip(); });
+      moreWrap.appendChild(moreBtn);
+      mount.appendChild(moreWrap);
+    }
   }
 
-  function equipItem(cat, name) {
-    const item = el('div', 'nx-eqitem');
-    const head = el('button', 'nx-eqitem__head');
-    head.innerHTML =
-      '<span class="nx-eqitem__name">' + name + '</span>' +
-      '<span class="chev">▾</span>';
-    const body = el('div', 'nx-eqitem__body');
-    const imgs = 3;
-    let frame = 0;
-    const car = el('div', 'nx-eqcar');
-    const media = img(cat + ' · ' + name, { ratio: '16/9' });
-    media.classList.add('nx-zoom');
-    car.appendChild(media);
-    body.appendChild(car);
-
-    // nav：頁次＋左右按鈕移至圖片下方（沿用特色區塊樣式）
-    const nav = el('div', 'nx-car__nav');
-    nav.innerHTML =
-      '<div class="wf-arrows"><button data-prev>‹</button></div>' +
-      '<span class="nx-car__count" data-count></span>' +
-      '<div class="wf-arrows"><button data-next>›</button></div>';
-    body.appendChild(nav);
-    const counter = nav.querySelector('[data-count]');
-    function paintCar() {
-      media.querySelector('.wf-img__label').textContent = cat + ' · ' + name + '（圖 ' + (frame + 1) + '）';
-      media.dataset.zoom = cat + ' · ' + name + ' 圖 ' + (frame + 1);
-      counter.textContent = (frame + 1) + ' / ' + imgs;
+  /* 配備 BottomSheet：圖片輪播 + 名稱 + 說明 */
+  function openEquipSheet(cat, name) {
+    let overlay = $('#nx-eqsheet');
+    if (!overlay) {
+      overlay = el('div', 'nx-overlay nx-eqsheet'); overlay.id = 'nx-eqsheet';
+      overlay.innerHTML = '<div class="nx-overlay__bd" data-close></div><div class="nx-panel" data-panel></div>';
+      document.body.appendChild(overlay);
+      overlay.addEventListener('click', e => { if (e.target.hasAttribute('data-close')) closeEquipSheet(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEquipSheet(); });
     }
-    nav.querySelector('[data-prev]').addEventListener('click', () => { frame = (frame - 1 + imgs) % imgs; paintCar(); });
-    nav.querySelector('[data-next]').addEventListener('click', () => { frame = (frame + 1) % imgs; paintCar(); });
-    paintCar();
-
-    const desc = el('p', 'wf-body nx-eqitem__desc');
-    desc.textContent = name + ' 的功能介紹與使用情境說明，將於此處呈現。';
-    body.appendChild(desc);
-
-    item.appendChild(head); item.appendChild(body);
-    head.addEventListener('click', () => {
-      item.classList.toggle('is-open');
-    });
-    return item;
+    overlay.style.setProperty('--nx-dev-w', ((window.WF_WIDTHS && window.WF_WIDTHS[device()]) || 1440) + 'px');
+    const panel = $('[data-panel]', overlay);
+    const imgs = 5;
+    let frame = 0;
+    const specName = ['標準型', '進階型', 'F SPORT 樣式', '旗艦型', '頂級選配'];
+    panel.innerHTML =
+      '<div class="nx-panel__top"><div><span class="wf-eyebrow">' + cat + '</span>' +
+        '<h2 class="wf-h2 nxeq-sheet__title">' + name + '</h2></div>' +
+        '<button class="nx-panel__x" data-close aria-label="關閉">✕</button></div>' +
+      '<div class="nx-panel__scroll">' +
+        '<div class="nxeq-sheet__car">' +
+          '<div class="wf-img nxeq-sheet__media" style="aspect-ratio:4/3"><span class="wf-img__label" data-label></span></div>' +
+        '</div>' +
+        '<div class="nxeq-sheet__nav">' +
+          '<button class="nxeq-sheet__arrow" data-prev aria-label="上一張">‹</button>' +
+          '<span class="nxeq-sheet__count" data-count></span>' +
+          '<button class="nxeq-sheet__arrow" data-next aria-label="下一張">›</button>' +
+        '</div>' +
+        '<h3 class="nxeq-sheet__sub" data-sub></h3>' +
+        '<p class="nxeq-sheet__desc" data-desc></p>' +
+      '</div>' +
+      '<div class="nx-panel__foot"><button class="wf-btn wf-btn--secondary" data-closef>關閉</button></div>';
+    const label = $('[data-label]', panel);
+    const count = $('[data-count]', panel);
+    const sub = $('[data-sub]', panel);
+    const desc = $('[data-desc]', panel);
+    function paint() {
+      const sp = specName[frame] || ('規格 ' + (frame + 1));
+      label.textContent = cat + ' · ' + name + ' · ' + sp;
+      count.textContent = (frame + 1) + ' / ' + imgs;
+      sub.textContent = name + '（' + sp + '）';
+      desc.textContent = sp + '的配備說明文字，介紹此規格下該項配備的功能、材質與使用情境。實際配備依各車型等級與實車為準。';
+    }
+    $('[data-prev]', panel).addEventListener('click', () => { frame = (frame - 1 + imgs) % imgs; paint(); });
+    $('[data-next]', panel).addEventListener('click', () => { frame = (frame + 1) % imgs; paint(); });
+    $('.nx-panel__x', panel).addEventListener('click', closeEquipSheet);
+    $('[data-closef]', panel).addEventListener('click', closeEquipSheet);
+    paint();
+    overlay.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeEquipSheet() {
+    const o = $('#nx-eqsheet'); if (o) o.classList.remove('is-open');
+    document.body.style.overflow = '';
   }
 
   /* ============================================================
@@ -533,15 +596,17 @@
   function renderFaq() {
     const mount = $('#nx-faq'); if (!mount) return;
     let cat = 0;
+    let faqExpanded = false;
+    const FAQ_PREVIEW = 4;
     const tabwrap = el('div', 'nx-faq__tabwrap');
     const tabs = el('div', 'wf-tabs nx-faq__tabs');
     D.faq.forEach((f, i) => {
       const t = el('button', 'wf-tab', f.cat);
       t.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
-      t.addEventListener('click', () => { cat = i; paint(); centerTab(t); });
+      t.addEventListener('click', () => { cat = i; faqExpanded = false; paint(); centerTab(t); });
       tabs.appendChild(t);
     });
-    const more = el('button', 'nx-faq__more', '更多 <span class="chev">▾</span>');
+    const more = el('button', 'nx-faq__more', '<span class="chev">▾</span>');
     more.setAttribute('data-faqmore', '');
     tabwrap.appendChild(tabs); tabwrap.appendChild(more);
     const list = el('div', 'nx-faq__list');
@@ -562,7 +627,7 @@
         '<div class="nx-catmenu__grid">' +
           D.faq.map((f, i) => '<button class="nx-catmenu__item' + (i === cat ? ' is-current' : '') + '" data-faqgo="' + i + '"><span class="nx-catmenu__cn">' + f.cat + '</span></button>').join('') +
         '</div>';
-      $$('[data-faqgo]', menu).forEach(b => b.addEventListener('click', () => { cat = +b.dataset.faqgo; closeMenu(); paint(); const t = $$('.wf-tab', tabs)[cat]; if (t) centerTab(t); }));
+      $$('[data-faqgo]', menu).forEach(b => b.addEventListener('click', () => { cat = +b.dataset.faqgo; faqExpanded = false; closeMenu(); paint(); const t = $$('.wf-tab', tabs)[cat]; if (t) centerTab(t); }));
       more.setAttribute('aria-expanded', 'true');
       requestAnimationFrame(() => menu.classList.add('is-open'));
     }
@@ -573,7 +638,9 @@
     function paint() {
       $$('.wf-tab', tabs).forEach((t, i) => t.setAttribute('aria-selected', i === cat ? 'true' : 'false'));
       list.innerHTML = '';
-      D.faq[cat].items.forEach(qa => {
+      const all = D.faq[cat].items;
+      const shown = faqExpanded ? all : all.slice(0, FAQ_PREVIEW);
+      shown.forEach(qa => {
         const item = el('div', 'nx-qa');
         item.innerHTML =
           '<button class="nx-qa__q"><span>' + qa.q + '</span><span class="chev">＋</span></button>' +
@@ -581,6 +648,14 @@
         item.querySelector('.nx-qa__q').addEventListener('click', () => { item.classList.toggle('is-open'); item.querySelector('.chev').textContent = item.classList.contains('is-open') ? '－' : '＋'; });
         list.appendChild(item);
       });
+      if (all.length > FAQ_PREVIEW) {
+        const moreWrap = el('div', 'nx-eqmore');
+        const moreBtn = el('button', 'wf-btn wf-btn--secondary',
+          faqExpanded ? '收合' : '看更多（' + (all.length - FAQ_PREVIEW) + '）');
+        moreBtn.addEventListener('click', () => { faqExpanded = !faqExpanded; paint(); });
+        moreWrap.appendChild(moreBtn);
+        list.appendChild(moreWrap);
+      }
     }
     paint();
   }

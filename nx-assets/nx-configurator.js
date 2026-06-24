@@ -19,43 +19,36 @@
     { id: 'titanium', hex: '#837e78', name: '極光鈦', spec: 'F SPORT版專屬' },
     { id: 'gray',     hex: '#54565e', name: '星耀灰', spec: '全車型適用' },
     { id: 'blue',     hex: '#1f54c4', name: '星空藍', spec: 'F SPORT版、旗艦版、頂級版、豪華版、菁英版專屬' },
+    { id: 'flame',    hex: '#0d8ec9', name: '極焰藍', spec: 'F SPORT版專屬' },
     { id: 'black',    hex: '#0c0c0d', name: '星熠黑', spec: '全車型適用' },
     { id: 'red',      hex: '#d11f1f', name: '燦艷紅', spec: 'F SPORT版、頂級版專屬' },
     { id: 'green',    hex: '#1f3a2a', name: '大地綠', spec: '旗艦版、豪華版專屬' },
-    { id: 'champagne',hex: '#b9a888', name: '香檳金', spec: '頂級版、豪華版專屬' },
-    { id: 'silver',   hex: '#c5c9ce', name: '月光銀', spec: '全車型適用' },
-    { id: 'deepblue', hex: '#1d2b40', name: '深海藍', spec: 'F SPORT版、旗艦版專屬' },
   ];
   const WHEELS = [
-    { id: 'w18', name: '18吋 節能輪圈',        en: '18" AERO' },
-    { id: 'w20', name: '20吋 鋁合金輪圈',       en: '20" ALLOY' },
-    { id: 'w21', name: '21吋 F SPORT 切削雙色', en: '21" F SPORT' },
+    { id: 'w18', name: '18吋 銳切雙色鋁圈', en: '18" TWO-TONE' },
   ];
   const INT_COLORS = [
-    { id: 'noir', hex: '#1c1f24', name: '曜黑真皮', en: 'NAPPA BLACK' },
-    { id: 'igry', hex: '#3a3f47', name: '岩灰真皮', en: 'GRANITE' },
-    { id: 'burg', hex: '#6b3a3a', name: '勃艮地',   en: 'BURGUNDY' },
-    { id: 'flax', hex: '#c7b79b', name: '亞麻白',   en: 'FLAXEN' },
+    { id: 'red',   hex: '#6b2a2a', name: '幻焰紅', en: 'FLARE RED' },
+    { id: 'brown', hex: '#7a5a36', name: '金耀棕', en: 'GOLDEN BROWN' },
+    { id: 'black', hex: '#1c1f24', name: '尊爵黑', en: 'NOBLE BLACK' },
   ];
   const TRIMS = [
-    { id: 'metal', name: '黑質金屬', en: 'BLACK METALLIC' },
-    { id: 'wood',  name: '深棕木紋', en: 'DARK WOOD' },
-    { id: 'alu',   name: '鋁質髮絲紋', en: 'ALUMINUM' },
+    { id: 'art', name: '光雕藝塑飾板', en: 'ART' },
   ];
   // 版本為 gate：限定後續每步可選範圍
   const VERSIONS = [
     { id: '450h', name: 'NX 450h+', power: 'PHEV 插電油電', diff: '純電續航最長 · E-Four 電子四驅', price: 'NT$ 237.5 萬',
-      colors: ['white','titanium','gray','blue','black','red','green','champagne','silver','deepblue'],
-      wheels: ['w18','w20','w21'], intColors: ['noir','igry','burg','flax'], trims: ['metal','wood','alu'] },
+      colors: ['white','titanium','gray','blue','flame','black','red','green'],
+      wheels: ['w18'], intColors: ['red','brown','black'], trims: ['art'] },
     { id: '350h', name: 'NX 350h', power: 'HEV 油電', diff: 'E-Four 四驅 · 電動記憶座椅', price: 'NT$ 184.0 萬',
-      colors: ['white','titanium','gray','blue','black','red','silver'],
-      wheels: ['w18','w20'], intColors: ['noir','igry','flax'], trims: ['metal','wood'] },
+      colors: ['white','titanium','gray','blue','black','red'],
+      wheels: ['w18'], intColors: ['brown','black'], trims: ['art'] },
     { id: '350', name: 'NX 350', power: '2.4T 汽油渦輪', diff: '渦輪增壓 · 跑格取向', price: 'NT$ 162.0 萬',
-      colors: ['white','gray','blue','black','green','deepblue'],
-      wheels: ['w18','w20'], intColors: ['noir','igry'], trims: ['metal','wood'] },
+      colors: ['white','gray','blue','flame','black','green'],
+      wheels: ['w18'], intColors: ['black'], trims: ['art'] },
     { id: '200', name: 'NX 200', power: '2.0 自然進氣', diff: '入門動力 · 前輪驅動', price: 'NT$ 142.0 萬',
-      colors: ['white','silver','gray','black'],
-      wheels: ['w18'], intColors: ['noir','igry'], trims: ['metal'] },
+      colors: ['white','gray','black','flame'],
+      wheels: ['w18'], intColors: ['black'], trims: ['art'] },
   ];
 
   // 360 視角：連續 frame（拖曳旋轉）。外觀整圈、內裝半圈示意
@@ -64,13 +57,13 @@
   const STEPS = [
     { id: 'version',  label: '車型版本', short: '車型', en: 'VERSION',  view: 'ext', frame: 0,  interior: false,
       desc: '先選版本。版本決定後續可選的車色、輪圈與內裝範圍。' },
-    { id: 'extColor', label: '外觀配色', short: '外觀', en: 'EXTERIOR', view: 'ext', frame: 6,  interior: false,
+    { id: 'extColor', label: '外觀色系', short: '外觀', en: 'EXTERIOR', view: 'ext', frame: 6,  interior: false,
       desc: '選擇外觀車色，左右拖曳即可 360 旋轉檢視。' },
-    { id: 'wheel',    label: '輪圈樣式', short: '輪圈', en: 'WHEEL',    view: 'ext', frame: 3,  interior: false, detail: '輪圈特寫',
+    { id: 'wheel',    label: '鋁圈', short: '輪圈', en: 'WHEEL',    view: 'ext', frame: 3,  interior: false, detail: '輪圈特寫',
       desc: '選擇輪圈樣式，鏡頭自動帶到輪圈視角。' },
-    { id: 'intColor', label: '內裝配色', short: '內裝', en: 'INTERIOR', view: 'int', frame: 0,  interior: true,
+    { id: 'intColor', label: '內裝色系', short: '內裝', en: 'INTERIOR', view: 'int', frame: 0,  interior: true,
       desc: '舞台切換至內裝視角，左右拖曳檢視座艙。' },
-    { id: 'trim',     label: '內裝飾板', short: '飾版', en: 'TRIM',     view: 'int', frame: 4,  interior: true, detail: '飾板特寫',
+    { id: 'trim',     label: '飾板色系', short: '飾版', en: 'TRIM',     view: 'int', frame: 4,  interior: true, detail: '飾板特寫',
       desc: '選擇飾板材質，鏡頭自動帶到飾板區。' },
   ];
 
@@ -81,7 +74,7 @@
   const device = () => (window.__wf && window.__wf.device) || 'desktop';
 
   const state = {
-    version: '450h', extColor: 'green', wheel: 'w21', intColor: 'noir', trim: 'metal',
+    version: '450h', extColor: 'green', wheel: 'w18', intColor: 'red', trim: 'art',
     step: 0, view: 'ext', frameExt: 0, frameInt: 0, detail: null, mode: 'config',
   };
   let overlay = null, entryMount = null;
@@ -183,6 +176,7 @@
     }
 
     imgEl.classList.remove('nxc-fade'); void imgEl.offsetWidth; imgEl.classList.add('nxc-fade');
+    if (state._onFrame) state._onFrame();
   }
 
   /* ---- 4 · 車款頁入口卡 ----------------------------------- */
@@ -238,6 +232,349 @@
     paintEntrySwatches();
     paintStage(stageWrap, 'ext');
     entryMount._repaint = () => { paintEntrySwatches(); paintStage(stageWrap, 'ext'); };
+  }
+
+  /* ---- 4b · 車款頁 FLAT 直選（第一層）---------------------
+     手機：上方大圖 + 下方選項按鈕；點按鈕 → BottomSheet，按 DONE/✕
+           關閉時才換上方大圖。
+     平板／桌機：左大圖 + 縮圖列；右側手風琴（一次一張），點了即時換圖。
+     共用 optionCards() 產生選項卡。 */
+  function railVal(id) {
+    return id === 'version' ? ver().name
+      : id === 'extColor' ? extName()
+      : id === 'wheel' ? wheelObj().name
+      : id === 'intColor' ? intName()
+      : trimObj().name;
+  }
+  function curVal(id) {
+    return id === 'version' ? state.version
+      : id === 'extColor' ? state.extColor
+      : id === 'wheel' ? state.wheel
+      : id === 'intColor' ? state.intColor
+      : state.trim;
+  }
+  function stepFor(id) { return STEPS.find(x => x.id === id); }
+  function setStateCat(id, val) {
+    if (id === 'version') state.version = val;
+    else if (id === 'extColor') state.extColor = val;
+    else if (id === 'wheel') state.wheel = val;
+    else if (id === 'intColor') state.intColor = val;
+    else state.trim = val;
+  }
+
+  function verCardHTML(v) {
+    return '<div class="nxc-opt__vtop"><span class="nxc-opt__name">' + v.name + '</span>' +
+      '<span class="wf-tag">' + v.power.split(' ')[0] + '</span></div>' +
+      '<span class="nxc-opt__diff">' + v.diff + '</span>' +
+      '<span class="nxc-opt__price">' + v.price + '</span>';
+  }
+  function swCardHTML(c) {
+    return '<span class="nxc-opt__block" style="background:' + c.hex + '"></span>' +
+      '<span class="nxc-opt__name">' + c.name + '</span>' +
+      (c.spec ? '<span class="nxc-opt__sub">' + c.spec + '</span>' : '');
+  }
+  function intCardHTML(c) {
+    return '<span class="wf-img nxc-opt__img" style="background:' + c.hex + '"><span class="wf-img__label">' + c.en + '</span></span>' +
+      '<span class="nxc-opt__name">' + c.name + '</span>';
+  }
+  function thumbCardHTML(t) {
+    return '<span class="wf-img nxc-opt__img"><span class="wf-img__label">' + t.en + '</span></span>' +
+      '<span class="nxc-opt__name">' + t.name + '</span>';
+  }
+
+  // 共用選項卡。getSel()＝目前（或暫存）選值；onSel(id)＝點選回呼。
+  function optionCards(catId, getSel, onSel) {
+    const box = el('div', 'nxc-opts nxc-opts--' + catId);
+    function refresh() {
+      box.querySelectorAll('[data-id]').forEach(n =>
+        n.setAttribute('aria-selected', n.dataset.id === getSel() ? 'true' : 'false'));
+    }
+    function add(id, html) {
+      const it = el('button', 'nxc-opt');
+      it.dataset.id = id; it.innerHTML = html;
+      it.setAttribute('aria-selected', id === getSel() ? 'true' : 'false');
+      it.addEventListener('click', () => { onSel(id); refresh(); });
+      box.appendChild(it);
+    }
+    if (catId === 'version') VERSIONS.forEach(v => add(v.id, verCardHTML(v)));
+    else if (catId === 'extColor') ver().colors.forEach(cid => add(cid, swCardHTML(byId(EXT_COLORS, cid))));
+    else if (catId === 'intColor') ver().intColors.forEach(cid => add(cid, intCardHTML(byId(INT_COLORS, cid))));
+    else {
+      const isW = catId === 'wheel';
+      (isW ? ver().wheels : ver().trims).forEach(tid => add(tid, thumbCardHTML(byId(isW ? WHEELS : TRIMS, tid))));
+    }
+    box._refresh = refresh;
+    return box;
+  }
+
+  // 放大檢視（全螢幕車款重點）：沿用 reveal 版型；✕／繼續自訂皆回到頁面
+  function openReveal() {
+    ensureOverlay();
+    overlay.dataset.device = device();
+    setScreenWidth();
+    renderReveal(close);
+    requestAnimationFrame(() => overlay.classList.add('is-open'));
+    document.documentElement.style.overflow = 'hidden';
+  }
+
+  let flatCtx = null;
+
+  function renderFlat(sel) {
+    const mount = typeof sel === 'string' ? document.querySelector(sel) : sel;
+    if (!mount) return;
+    entryMount = mount;
+    if (!state.view) state.view = 'ext';
+    flatCtx = { sel: sel, mount: mount, dev: device() };
+    drawFlat(mount);
+  }
+
+  function drawFlat(mount) {
+    mount.innerHTML = '';
+    const split = device() === 'desktop';
+
+    const root = el('div', 'nxc-flat'); root.dataset.mode = split ? 'split' : 'mobile';
+    const left = el('div', 'nxc-flat__left');
+    const right = el('div', 'nxc-flat__right');
+    const stageHost = el('div', 'nxc-flat__stage');
+    const imgnav = el('div', 'nxc-flat__imgnav');
+    const controls = el('div', 'nxc-flat__controls');
+    const summary = el('div', 'nxc-flat__summary');
+    left.appendChild(stageHost); left.appendChild(imgnav);
+    right.appendChild(controls); /* summary 摘要區已移除 */
+    root.appendChild(left); root.appendChild(right);
+    mount.appendChild(root);
+
+    let stageWrap = null;
+    let openCat = null;
+
+    function mountStage() {
+      if (stageWrap) stageWrap.remove();
+      stageWrap = buildStage(state.view);
+      const canvas = stageWrap.querySelector('.nxc-canvas');
+      const z = canvas.querySelector('.nxc-stage__zoom'); if (z) z.remove();
+      const tog = el('div', 'nxc-flat__viewtog');
+      tog.innerHTML =
+        '<button data-vt="ext"' + (state.view === 'ext' ? ' aria-selected="true"' : '') + '>外觀</button>' +
+        '<button data-vt="int"' + (state.view === 'int' ? ' aria-selected="true"' : '') + '>內裝</button>';
+      tog.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+        const v = b.dataset.vt; if (v === state.view) return;
+        state.view = v; setFrame(v, v === 'ext' ? 6 : 0);
+        repaintStage(); paintImageNav();
+      }));
+      canvas.appendChild(tog);
+      const zb = el('button', 'nxc-flat__zoombtn');
+      zb.setAttribute('aria-label', '放大檢視');
+      zb.title = '放大檢視';
+      zb.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"></circle><line x1="15.5" y1="15.5" x2="21" y2="21"></line><line x1="10.5" y1="7.5" x2="10.5" y2="13.5"></line><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"></line></svg>';
+      zb.addEventListener('click', openReveal);
+      canvas.appendChild(zb);
+      stageHost.appendChild(stageWrap);
+      paintStage(stageWrap, state.view);
+    }
+    function repaintStage() {
+      if (!stageWrap || stageWrap.dataset.view !== state.view) mountStage();
+      else paintStage(stageWrap, state.view);
+    }
+
+    function paintImageNav() {
+      imgnav.innerHTML = '';
+      const count = state.view === 'ext' ? 8 : 6;
+      const frames = framesOf(state.view);
+      const cur = ((Math.round(curFrame(state.view) / frames * count) % count) + count) % count;
+      if (split) {
+        const prev = el('button', 'nxc-imgnav__nav', '‹');
+        const vp = el('div', 'nxc-imgnav__vp');
+        const track = el('div', 'nxc-imgnav__track');
+        const next = el('button', 'nxc-imgnav__nav', '›');
+        vp.appendChild(track);
+        for (let i = 0; i < count; i++) {
+          const f = Math.round(i / count * frames);
+          const ang = angleInfo(state.view, f);
+          const th = el('button', 'nxc-thumb2' + (i === cur ? ' is-on' : ''));
+          th.innerHTML = '<span class="wf-img wf-img--plain nxc-thumb2__img"><span class="wf-img__label">' + ang.en + '</span></span>';
+          th.title = ang.cn;
+          th.addEventListener('click', () => { setFrame(state.view, f); repaintStage(); paintImageNav(); });
+          track.appendChild(th);
+        }
+        prev.addEventListener('click', () => vp.scrollBy({ left: -220, behavior: 'smooth' }));
+        next.addEventListener('click', () => vp.scrollBy({ left: 220, behavior: 'smooth' }));
+        imgnav.appendChild(prev); imgnav.appendChild(vp); imgnav.appendChild(next);
+      } else {
+        const prev = el('button', 'nxc-flat__arrow', '‹');
+        const dotrow = el('div', 'nxc-flat__dots');
+        const next = el('button', 'nxc-flat__arrow', '›');
+        for (let i = 0; i < count; i++) {
+          const f = Math.round(i / count * frames);
+          const d = el('button', 'nxc-flat__dot' + (i === cur ? ' is-on' : ''));
+          d.addEventListener('click', () => { setFrame(state.view, f); repaintStage(); paintImageNav(); });
+          dotrow.appendChild(d);
+        }
+        const stepNav = (dir) => {
+          const ni = ((cur + dir) % count + count) % count;
+          setFrame(state.view, Math.round(ni / count * frames));
+          repaintStage(); paintImageNav();
+        };
+        prev.addEventListener('click', () => stepNav(-1));
+        next.addEventListener('click', () => stepNav(1));
+        imgnav.appendChild(prev); imgnav.appendChild(dotrow); imgnav.appendChild(next);
+      }
+    }
+    state._onFrame = paintImageNav;
+
+    function paintSummary() {
+      const v = ver();
+      summary.innerHTML =
+        '<div class="nxc-flat__sumline"><div><div class="nxc-flat__sumbrand">YOUR LEXUS</div>' +
+        '<div class="nxc-flat__summodel">' + v.name + '</div></div>' +
+        '<div class="nxc-flat__sumprice">' + v.price + ' 起</div></div>' +
+        '<p class="nxc-flat__note">您喜歡眼前的 NX 嗎？將您的配置加入收藏，預約專人為您安排賞車與試乘。</p>' +
+        '<div class="nxc-flat__cta">' +
+        '<button class="wf-btn wf-btn--secondary">分享儲存</button>' +
+        '<button class="wf-btn wf-btn--primary">預約試乘 ›</button></div>';
+    }
+
+    /* ---- 桌機／平板：手風琴（一次一張，即時換圖）---- */
+    function refreshAccHeads() {
+      controls.querySelectorAll('.nxc-acc').forEach(p => p._refreshHead && p._refreshHead());
+    }
+    function pickLive(catId, id) {
+      if (catId === 'version') {
+        if (id === state.version) return;
+        state.version = id; applyVersionGate(); applyFocus(STEPS[0]);
+      } else { setStateCat(catId, id); applyFocus(stepFor(catId)); }
+      repaintStage(); paintImageNav(); paintSummary(); refreshAccHeads();
+      if (catId === 'version' && openCat && openCat !== 'version') {
+        const p = controls.querySelector('.nxc-acc[data-id="' + openCat + '"]');
+        if (p) p._fill();
+      }
+    }
+    function limitToTwoRows(body) {
+      const grid = body.querySelector('.nxc-opts');
+      if (!grid) return;
+      const cards = Array.from(grid.children);
+      if (cards.length < 3) return; // 兩列以內不需捲動
+      const gridTop = grid.getBoundingClientRect().top;
+      const tops = [];
+      cards.forEach(c => {
+        const t = c.getBoundingClientRect().top - gridTop;
+        if (!tops.some(v => Math.abs(v - t) < 2)) tops.push(t);
+      });
+      if (tops.length < 3) return; // 實際不足三列
+      tops.sort((a, b) => a - b);
+      const cs = getComputedStyle(body);
+      const padTop = parseFloat(cs.paddingTop) || 0;
+      const padBot = parseFloat(cs.paddingBottom) || 0;
+      const gap = parseFloat(getComputedStyle(grid).rowGap) || 0;
+      // 以第三列頂端為界，保留兩列
+      body.style.maxHeight = (padTop + tops[2] - gap / 2 + padBot) + 'px';
+      body.style.overflowY = 'auto';
+    }
+    function accPanel(catId) {
+      const s = stepFor(catId);
+      const panel = el('section', 'nxc-acc'); panel.dataset.id = catId;
+      const head = el('button', 'nxc-acc__head');
+      head.innerHTML =
+        '<div class="nxc-acc__htext"><span class="wf-eyebrow">' + s.en + '</span><h4>' + s.label + '</h4></div>' +
+        '<span class="nxc-acc__hval" data-hval>' + railVal(catId) + '</span>' +
+        '<span class="nxc-acc__chev">˅</span>';
+      const body = el('div', 'nxc-acc__body');
+      panel.appendChild(head); panel.appendChild(body);
+      panel._refreshHead = () => { head.querySelector('[data-hval]').textContent = railVal(catId); };
+      panel._fill = () => {
+        body.innerHTML = '';
+        body.appendChild(optionCards(catId, () => curVal(catId), (id) => pickLive(catId, id)));
+        body.style.maxHeight = '';
+        body.style.overflowY = '';
+        if (split) requestAnimationFrame(() => limitToTwoRows(body));
+      };
+      head.addEventListener('click', () => {
+        if (openCat === catId) { openCat = null; panel.classList.remove('is-open'); body.innerHTML = ''; return; }
+        if (openCat) {
+          const prev = controls.querySelector('.nxc-acc[data-id="' + openCat + '"]');
+          if (prev) { prev.classList.remove('is-open'); prev.querySelector('.nxc-acc__body').innerHTML = ''; }
+        }
+        openCat = catId; panel._fill(); panel.classList.add('is-open');
+      });
+      return panel;
+    }
+
+    /* ---- 手機：選項按鈕 + BottomSheet（DONE 才換圖）---- */
+    function refreshButtons() {
+      controls.querySelectorAll('.nxc-btn[data-id]').forEach(b => {
+        const v = b.querySelector('[data-val]'); if (v) v.textContent = railVal(b.dataset.id);
+      });
+    }
+    function catButton(id) {
+      const s = stepFor(id);
+      const b = el('button', 'nxc-btn' + (id === 'version' ? ' nxc-btn--wide' : ''));
+      b.dataset.id = id;
+      b.innerHTML =
+        '<span class="nxc-btn__lbl">' + s.label + '</span>' +
+        '<span class="nxc-btn__val" data-val>' + railVal(id) + '</span>' +
+        '<span class="nxc-btn__chev">' + (id === 'version' ? '˅' : '›') + '</span>';
+      b.addEventListener('click', () => openSheet(id));
+      return b;
+    }
+    function openSheet(catId) {
+      const s = stepFor(catId);
+      let staged = curVal(catId);
+      const sheet = el('div', 'nxc-sheet nxc-sheet--' + device());
+      sheet.style.setProperty('--nxc-w', ((window.WF_WIDTHS && window.WF_WIDTHS[device()]) || 390) + 'px');
+      const col = el('div', 'nxc-sheet__col');
+      const panel = el('div', 'nxc-sheet__panel');
+      const head = el('div', 'nxc-sheet__head');
+      head.innerHTML =
+        '<div class="nxc-sheet__grab"></div>' +
+        '<div class="nxc-sheet__htext"><span class="wf-eyebrow">' + s.en + '</span><h4>' + s.label + '</h4></div>' +
+        '<button class="nxc-sheet__x" aria-label="關閉">✕</button>';
+      const bodyWrap = el('div', 'nxc-sheet__body');
+      bodyWrap.appendChild(optionCards(catId, () => staged, (id) => { staged = id; }));
+      const foot = el('div', 'nxc-sheet__foot');
+      const done = el('button', 'wf-btn wf-btn--primary', 'DONE');
+      foot.appendChild(done);
+      panel.appendChild(head); panel.appendChild(bodyWrap); panel.appendChild(foot);
+      col.appendChild(panel); sheet.appendChild(col);
+      document.body.appendChild(sheet);
+      requestAnimationFrame(() => sheet.classList.add('is-open'));
+      document.documentElement.style.overflow = 'hidden';
+
+      function applyClose() {
+        setStateCat(catId, staged);
+        if (catId === 'version') applyVersionGate();
+        applyFocus(stepFor(catId)); // 切視角 + 角度 → 關閉時才換上方大圖
+        repaintStage(); paintImageNav(); paintSummary(); refreshButtons();
+        sheet.classList.remove('is-open');
+        document.documentElement.style.overflow = '';
+        setTimeout(() => sheet.remove(), 320);
+      }
+      head.querySelector('.nxc-sheet__x').addEventListener('click', applyClose);
+      done.addEventListener('click', applyClose);
+      sheet.addEventListener('click', e => { if (e.target === sheet) applyClose(); });
+    }
+
+    function buildControls() {
+      controls.innerHTML = '';
+      if (split) {
+        ['version', 'extColor', 'wheel', 'intColor', 'trim'].forEach(id => controls.appendChild(accPanel(id)));
+      } else {
+        const grid = el('div', 'nxc-btns');
+        ['version', 'extColor', 'wheel', 'intColor', 'trim'].forEach(id => grid.appendChild(catButton(id)));
+        controls.appendChild(grid);
+      }
+    }
+
+    mountStage();
+    paintImageNav();
+    buildControls();
+    paintSummary();
+    if (split) {
+      const p = controls.querySelector('.nxc-acc[data-id="extColor"]');
+      if (p) { openCat = 'extColor'; p._fill(); p.classList.add('is-open'); }
+    }
+    mount._repaint = () => {
+      repaintStage(); paintImageNav(); paintSummary();
+      if (split) refreshAccHeads(); else refreshButtons();
+    };
   }
 
   /* ---- 5 · 全螢幕 OVERLAY 狀態機 -------------------------- */
@@ -436,7 +773,8 @@
   }
 
   /* ---- 6 · 完成 / 揭曉（全幅車圖 + 上層資訊）-------------- */
-  function renderReveal() {
+  function renderReveal(onEdit) {
+    const editFn = onEdit || function () { state.mode = 'config'; renderConfig(); };
     state.mode = 'reveal';
     state.view = 'ext'; state.detail = null; setFrame('ext', 6);
     const screen = overlay.querySelector('.nxc-screen');
@@ -446,10 +784,8 @@
     // 頂列：關閉 + 繼續調整（浮在車圖上）
     const bar = el('div', 'nxc-bar nxc-bar--float');
     bar.innerHTML =
-      '<button class="nxc-bar__x" data-x aria-label="關閉">✕</button>' +
-      '<button class="wf-btn wf-btn--ghost wf-btn--sm" data-edit style="margin-left:auto">‹ 繼續自訂</button>';
+      '<button class="nxc-bar__x" data-x aria-label="關閉">✕</button>';
     bar.querySelector('[data-x]').addEventListener('click', close);
-    bar.querySelector('[data-edit]').addEventListener('click', () => { state.mode = 'config'; renderConfig(); });
 
     // 全幅車圖
     const reveal = el('div', 'nxc-reveal');
@@ -481,7 +817,9 @@
 
     // 底部兩顆按鈕
     const cta = el('div', 'nxc-reveal__cta');
-    cta.appendChild(el('button', 'wf-btn wf-btn--secondary', '分享儲存'));
+    const closeBtn = el('button', 'wf-btn wf-btn--secondary', '關閉');
+    closeBtn.addEventListener('click', close);
+    cta.appendChild(closeBtn);
     cta.appendChild(el('button', 'wf-btn wf-btn--primary', '預約試乘 ›'));
 
     screen.appendChild(reveal);
@@ -508,9 +846,13 @@
   /* ---- 8 · 對外介面 -------------------------------------- */
   window.NXConfigurator = {
     renderEntry: renderEntry,
+    renderFlat: renderFlat,
     open: open,
     close: close,
-    setDevice: function (dev) { if (overlay) { overlay.dataset.device = dev; setScreenWidth(); } },
+    setDevice: function (dev) {
+      if (overlay) { overlay.dataset.device = dev; setScreenWidth(); }
+      if (flatCtx && flatCtx.dev !== dev) { renderFlat(flatCtx.sel); }
+    },
     _data: { VERSIONS, EXT_COLORS, WHEELS, INT_COLORS, TRIMS, STEPS },
   };
 })();
