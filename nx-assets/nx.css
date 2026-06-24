@@ -13,6 +13,7 @@ body { margin: 0; }
 .nx-sechead { text-align: center; margin-bottom: 40px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
 .nx-sechead--sticky { position: sticky; top: 0; z-index: 30; background: var(--wf-stage); padding: 24px 0 18px; margin-bottom: 24px; }
 .nx-stage-grey { background: var(--wf-stage); border-top: 1px solid var(--wf-line); border-bottom: 1px solid var(--wf-line); }
+.nx-spec-actions { display: flex; justify-content: flex-end; margin-bottom: 16px; }
 
 /* ============================================================
    HERO
@@ -37,6 +38,8 @@ body { margin: 0; }
   background: rgba(20,24,30,.28);
 }
 .nx-hero__cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+.nx-hero__cta .wf-btn--secondary { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.7); color: #fff; }
+.nx-hero__cta .wf-btn--secondary:hover { background: rgba(255,255,255,.22); border-color: #fff; color: #fff; }
 .nx-hero__variants {
   font-family: var(--wf-mono); font-size: 13px; letter-spacing: .08em; color: var(--wf-ink-2);
   padding: 14px 64px; border-bottom: 1px solid var(--wf-line);
@@ -159,6 +162,7 @@ body { margin: 0; }
 .nx-fcard .wf-img { border-radius: 0; border-left: 0; border-right: 0; border-top: 0; }
 .nx-fcard__txt { display: flex; flex-direction: column; gap: 10px; padding: 4px 18px 20px; }
 .nx-fcard__title { font-size: 19px; font-weight: 600; margin: 2px 0 0; }
+.nx-fcard__more { align-self: flex-start; margin-top: 2px; }
 .nx-fcard .nx-play--onimg { position: absolute; right: 12px; bottom: 12px; z-index: 2; }
 
 /* 單一「查看更詳細」按鈕（標題區塊下方）*/
@@ -350,7 +354,7 @@ body { margin: 0; }
 .nxeq-sheet__arrow:hover { border-color: var(--wf-ink); color: var(--wf-ink); }
 .nxeq-sheet__count { font-family: var(--wf-mono); font-size: 13px; letter-spacing: .14em; color: var(--wf-ink); min-width: 56px; text-align: center; }
 .nxeq-sheet__sub { margin: 22px 0 0; font-size: 17px; font-weight: 600; color: var(--wf-ink); }
-.nxeq-sheet__desc { margin: 10px 0 0; font-size: 15px; line-height: 1.7; color: var(--wf-ink-2); }
+.nxeq-sheet__desc { margin: 10px 0 0; font-size: 15px; line-height: 1.7; color: var(--wf-ink-2); white-space: pre-line; }
 .wf-canvas[data-device="mobile"] .nx-eqcard { grid-template-columns: 92px 1fr; gap: 14px; }
 .wf-canvas[data-device="mobile"] .nx-eqcard__name { font-size: 16px; }
 .wf-canvas[data-device="desktop"] .nx-eqcards,

@@ -153,10 +153,15 @@
         card.appendChild(m);
         const tx = el('div', 'nx-fcard__txt');
         tx.innerHTML =
-          '<span class="wf-eyebrow">' + it.en + '</span>' +
           '<h4 class="nx-fcard__title">' + it.t + '</h4>';
         const desc = el('p', 'wf-body'); desc.style.fontSize = '14px'; desc.textContent = it.d;
         tx.appendChild(desc);
+        // 含 sheet 的特色項目：新增「瞭解更多」按鈕 + BottomSheet
+        if (it.sheet && it.sheet.length) {
+          const more = el('button', 'wf-btn wf-btn--secondary wf-btn--sm nx-fcard__more', '瞭解更多 ›');
+          more.addEventListener('click', () => openFeatSheet(f, it));
+          tx.appendChild(more);
+        }
         card.appendChild(tx);
         track.appendChild(card);
       });
@@ -206,17 +211,21 @@
     $('[data-next]', nav).addEventListener('click', () => go(index + 1));
 
     // swipe
-    let down = false, sx = 0, base = 0;
-    viewport.addEventListener('pointerdown', e => { down = true; sx = e.clientX; base = Math.min(index * step(), maxScroll()); track.style.transition = 'none'; viewport.setPointerCapture(e.pointerId); });
+    let down = false, sx = 0, base = 0, captured = false, pid = null;
+    viewport.addEventListener('pointerdown', e => { down = true; captured = false; pid = e.pointerId; sx = e.clientX; base = Math.min(index * step(), maxScroll()); track.style.transition = 'none'; });
     viewport.addEventListener('pointermove', e => {
       if (!down) return;
       const dx = e.clientX - sx;
+      // 僅在實際拖曳（超過門檻）才捕捉指標，避免吃掉卡片內按鈕的點擊
+      if (!captured && Math.abs(dx) > 6) { captured = true; try { viewport.setPointerCapture(pid); } catch (err) {} }
+      if (!captured) return;
       track.style.transform = 'translateX(' + (-(base - dx)) + 'px)';
     });
     function release(e) {
       if (!down) return; down = false;
       const dx = e.clientX - sx;
-      if (Math.abs(dx) > 50) go(index + (dx < 0 ? 1 : -1)); else apply();
+      if (captured && Math.abs(dx) > 50) go(index + (dx < 0 ? 1 : -1)); else apply();
+      captured = false;
     }
     viewport.addEventListener('pointerup', release);
     viewport.addEventListener('pointercancel', release);
@@ -587,6 +596,61 @@
   }
   function closeEquipSheet() {
     const o = $('#nx-eqsheet'); if (o) o.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  /* 特色卡片 BottomSheet（示意）：標題 + 圖片輪播 + 左右切換/頁次 + 說明 + 關閉 */
+  function openFeatSheet(f, it) {
+    let overlay = $('#nx-featsheet');
+    if (!overlay) {
+      overlay = el('div', 'nx-overlay nx-eqsheet'); overlay.id = 'nx-featsheet';
+      overlay.innerHTML = '<div class="nx-overlay__bd" data-close></div><div class="nx-panel" data-panel></div>';
+      document.body.appendChild(overlay);
+      overlay.addEventListener('click', e => { if (e.target.hasAttribute('data-close')) closeFeatSheet(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFeatSheet(); });
+    }
+    overlay.style.setProperty('--nx-dev-w', ((window.WF_WIDTHS && window.WF_WIDTHS[device()]) || 1440) + 'px');
+    const panel = $('[data-panel]', overlay);
+    const slides = (it.sheet && it.sheet.length) ? it.sheet : [{ t: it.t, d: it.d }];
+    const imgs = slides.length;
+    let frame = 0;
+    panel.innerHTML =
+      '<div class="nx-panel__top"><div>' +
+        '<h2 class="wf-h2 nxeq-sheet__title" data-title></h2></div>' +
+        '<button class="nx-panel__x" data-close aria-label="關閉">✕</button></div>' +
+      '<div class="nx-panel__scroll">' +
+        '<div class="nxeq-sheet__car">' +
+          '<div class="wf-img nxeq-sheet__media" style="aspect-ratio:16/9"><span class="wf-img__label" data-label></span></div>' +
+        '</div>' +
+        '<div class="nxeq-sheet__nav">' +
+          '<button class="nxeq-sheet__arrow" data-prev aria-label="上一張">‹</button>' +
+          '<span class="nxeq-sheet__count" data-count></span>' +
+          '<button class="nxeq-sheet__arrow" data-next aria-label="下一張">›</button>' +
+        '</div>' +
+        '<p class="nxeq-sheet__desc" data-desc></p>' +
+      '</div>' +
+      '<div class="nx-panel__foot"><button class="wf-btn wf-btn--secondary" data-closef>關閉</button></div>';
+    const titleEl = $('[data-title]', panel);
+    const label = $('[data-label]', panel);
+    const count = $('[data-count]', panel);
+    const descEl = $('[data-desc]', panel);
+    function paint() {
+      const s = slides[frame];
+      titleEl.textContent = s.t;
+      label.textContent = it.t + ' · ' + s.t;
+      count.textContent = (frame + 1) + ' / ' + imgs;
+      descEl.textContent = s.d;
+    }
+    $('[data-prev]', panel).addEventListener('click', () => { frame = (frame - 1 + imgs) % imgs; paint(); });
+    $('[data-next]', panel).addEventListener('click', () => { frame = (frame + 1) % imgs; paint(); });
+    $('.nx-panel__x', panel).addEventListener('click', closeFeatSheet);
+    $('[data-closef]', panel).addEventListener('click', closeFeatSheet);
+    paint();
+    overlay.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeFeatSheet() {
+    const o = $('#nx-featsheet'); if (o) o.classList.remove('is-open');
     document.body.style.overflow = '';
   }
 

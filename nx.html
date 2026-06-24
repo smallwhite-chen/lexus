@@ -38,6 +38,7 @@
         <span class="nx-hero__sub">由你 自定未來</span>
         <div class="nx-hero__cta">
           <button class="wf-btn wf-btn--primary">試乘諮詢 ›</button>
+          <button class="wf-btn wf-btn--secondary">型錄下載 ›</button>
         </div>
       </div>
     </section>
@@ -88,6 +89,9 @@
         <div class="nx-sechead">
           <span class="wf-eyebrow">SPECIFICATIONS</span>
           <h2 class="wf-h2">規格表</h2>
+        </div>
+        <div class="nx-spec-actions">
+          <button class="wf-btn wf-btn--secondary wf-btn--sm">前往全車系比較 ›</button>
         </div>
         <div id="nx-spec"></div>
       </div>
@@ -238,7 +242,7 @@
     }, [t.showCharge, t.showLink]);
     return (
       <TweaksPanel title="Tweaks">
-        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>VERSION</span><b>v1.5</b></div>
+        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>VERSION</span><b>v1.6</b></div>
         <TweakSection label="Device · 裝置尺寸" />
         <TweakRadio label="Viewport" value={t.device}
           options={[{ value: 'mobile', label: '手機' }, { value: 'tablet', label: '平板' }, { value: 'desktop', label: '桌機' }]}
