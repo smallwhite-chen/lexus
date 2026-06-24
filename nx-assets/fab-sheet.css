@@ -1,0 +1,74 @@
+/* ============================================================
+   固定 CTA · 樣式 B：圓形浮動按鈕 + BottomSheet（共用：首頁／車款頁）
+   切換來源：.wf-canvas[data-fab="bar"|"sheet"]
+   ============================================================ */
+.home-fabwrap { display: none; }
+.wf-canvas[data-fab="sheet"] .nx-fab { display: none !important; }
+.wf-canvas[data-fab="sheet"] .home-fabwrap { display: block; }
+
+/* sticky 浮層：錨定畫布底部，捲動時固定於可視底緣 */
+.home-fabwrap { position: sticky; bottom: 0; height: 0; z-index: 60; }
+
+.home-fab2 {
+  position: absolute; right: 24px; bottom: 24px;
+  width: 60px; height: 60px; border-radius: 50%; border: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--wf-ink); color: #fff;
+  box-shadow: 0 10px 28px -8px rgba(0,0,0,.5);
+  transition: transform .18s ease, background .18s;
+}
+.home-fab2:hover { transform: translateY(-2px); }
+.home-fab2__icon { display: flex; align-items: center; justify-content: center; line-height: 1; }
+
+/* BottomSheet（錨定畫布底部，向上覆蓋可視範圍）*/
+.home-sheet { position: absolute; left: 0; right: 0; bottom: 0; height: 0; }
+.home-sheet[hidden] { display: none; }
+.home-sheet__scrim { position: absolute; left: 0; right: 0; bottom: 0; height: 100vh; background: rgba(20,20,22,.45); opacity: 0; transition: opacity .25s; }
+.home-sheet.is-open .home-sheet__scrim { opacity: 1; }
+.home-sheet__panel {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: var(--wf-paper); border-radius: 18px 18px 0 0;
+  max-width: 520px; margin: 0 auto;
+  padding: 12px 20px 22px;
+  box-shadow: 0 -12px 32px -12px rgba(0,0,0,.35);
+  transform: translateY(100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
+}
+.home-sheet.is-open .home-sheet__panel { transform: translateY(0); }
+.home-sheet__grip { width: 40px; height: 4px; border-radius: 2px; background: var(--wf-line); margin: 4px auto 14px; }
+.home-sheet__title { font-size: 15px; font-weight: 600; color: var(--wf-ink); margin: 0 4px 14px; }
+.home-sheet__btns { display: flex; flex-direction: column; gap: 10px; }
+.wf-canvas[data-device="tablet"] .home-sheet__btns .nx-fab__btn,
+.wf-canvas[data-device="desktop"] .home-sheet__btns .nx-fab__btn,
+.wf-canvas .home-sheet__btns .nx-fab__btn,
+.home-sheet__btns .nx-fab__btn {
+  flex: 0 0 auto; width: 100%; flex-direction: row; height: 50px; min-height: 50px;
+  border: 1px solid var(--wf-line); border-right: 1px solid var(--wf-line); border-radius: 10px;
+  font-size: 15px; writing-mode: horizontal-tb; text-orientation: mixed; gap: 8px;
+}
+.home-sheet__btns .nx-fab__btn--primary { border-color: var(--wf-ink); }
+.home-sheet__close {
+  display: block; width: 100%; margin-top: 10px; padding: 12px 0;
+  border: 0; background: transparent; cursor: pointer;
+  color: var(--wf-ink-2, #6b7178); font-size: 14px; font-family: inherit;
+  transition: color .15s;
+}
+.home-sheet__close:hover { color: var(--wf-ink); }
+
+/* 平板＆桌機：彈窗改為貼齊圓鈕的浮出卡片（在按鈕上方顯示）*/
+.wf-canvas[data-device="tablet"] .home-sheet__scrim,
+.wf-canvas[data-device="desktop"] .home-sheet__scrim { background: rgba(20,20,22,.28); }
+.wf-canvas[data-device="tablet"] .home-sheet__panel,
+.wf-canvas[data-device="desktop"] .home-sheet__panel {
+  left: auto; right: 24px; bottom: 96px; margin: 0;
+  width: 280px; max-width: none;
+  border: 1px solid var(--wf-line); border-radius: 14px;
+  padding: 16px;
+  transform: translateY(12px) scale(.98); transform-origin: bottom right;
+  opacity: 0; transition: transform .22s cubic-bezier(.4,0,.2,1), opacity .22s;
+}
+.wf-canvas[data-device="tablet"] .home-sheet.is-open .home-sheet__panel,
+.wf-canvas[data-device="desktop"] .home-sheet.is-open .home-sheet__panel {
+  transform: translateY(0) scale(1); opacity: 1;
+}
+.wf-canvas[data-device="tablet"] .home-sheet__grip,
+.wf-canvas[data-device="desktop"] .home-sheet__grip { display: none; }
