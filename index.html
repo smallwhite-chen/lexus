@@ -30,9 +30,76 @@
       </div>
     </header>
 
-    <!-- 1 · HERO（情境影片 · 不輪播）-->
-    <section class="home-hero" data-screen-label="Hero">
-      <div class="wf-img wf-img--dark home-hero__media"><span class="wf-img__label">HERO · 情境影片（不輪播）</span></div>
+    <!-- 1 · HERO（主視覺輪播 · auto + 手動）-->
+    <section class="home-hero home-hero--carousel" data-screen-label="Hero" data-hero-carousel>
+      <div class="home-hero__viewport">
+        <div class="home-hero__track" data-hero-track>
+
+          <div class="home-hero__slide" data-hero-slide>
+            <div class="wf-img wf-img--dark home-hero__media"><span class="wf-img__label">HERO 01 · NX 情境主視覺</span></div>
+            <div class="home-hero__overlay">
+              <h2 class="home-hero__title home-hero__title--model">NX</h2>
+              <div class="home-hero__cta">
+                <a class="wf-btn wf-btn--primary" href="nx.html">了解更多 ›</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="home-hero__slide" data-hero-slide>
+            <div class="wf-img wf-img--dark home-hero__media"><span class="wf-img__label">HERO 02 · RZ 純電主視覺</span></div>
+            <div class="home-hero__overlay">
+              <h2 class="home-hero__title home-hero__title--model">RZ</h2>
+              <div class="home-hero__cta">
+                <a class="wf-btn wf-btn--primary" href="#">了解更多 ›</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="home-hero__slide" data-hero-slide>
+            <div class="wf-img wf-img--dark home-hero__media"><span class="wf-img__label">HERO 03 · RX 旗艦主視覺</span></div>
+            <div class="home-hero__overlay">
+              <h2 class="home-hero__title home-hero__title--model">RX</h2>
+              <div class="home-hero__cta">
+                <a class="wf-btn wf-btn--primary" href="#">了解更多 ›</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="home-hero__slide" data-hero-slide>
+            <div class="wf-img wf-img--dark home-hero__media"><span class="wf-img__label">HERO 04 · LM 尊榮主視覺</span></div>
+            <div class="home-hero__overlay">
+              <h2 class="home-hero__title home-hero__title--model">LM</h2>
+              <div class="home-hero__cta">
+                <a class="wf-btn wf-btn--primary" href="#">了解更多 ›</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="home-hero__slide" data-hero-slide>
+            <div class="wf-img wf-img--dark home-hero__media"><span class="wf-img__label">HERO 05 · ES 主視覺</span></div>
+            <div class="home-hero__overlay">
+              <h2 class="home-hero__title home-hero__title--model">ES</h2>
+              <div class="home-hero__cta">
+                <a class="wf-btn wf-btn--primary" href="#">了解更多 ›</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="home-hero__controls">
+        <button class="home-hero__arw home-hero__play" data-hero-play aria-label="暫停輪播">❙❙</button>
+        <div class="home-hero__dots" data-hero-dots>
+          <button class="home-hero__dot is-active" data-hero-dot="0" aria-label="第 1 張"></button>
+          <button class="home-hero__dot" data-hero-dot="1" aria-label="第 2 張"></button>
+          <button class="home-hero__dot" data-hero-dot="2" aria-label="第 3 張"></button>
+          <button class="home-hero__dot" data-hero-dot="3" aria-label="第 4 張"></button>
+          <button class="home-hero__dot" data-hero-dot="4" aria-label="第 5 張"></button>
+        </div>
+        <button class="home-hero__arw home-hero__arw--prev" data-hero-prev aria-label="上一張">‹</button>
+        <button class="home-hero__arw home-hero__arw--next" data-hero-next aria-label="下一張">›</button>
+      </div>
     </section>
 
     <!-- 2 · 重點車款（3–4 款）-->
@@ -47,36 +114,36 @@
           <div class="wf-img home-model__media"><span class="wf-img__label">NX KEY VISUAL</span></div>
           <div class="home-model__row">
             <span class="home-model__name">NX</span>
-            <div class="home-model__tags"><span class="wf-tag">HEV</span><span class="wf-tag">PHEV</span></div>
+            <div class="home-model__tags"><span class="wf-tag">HEV<i class="wf-tag__cn">油電混合</i></span><span class="wf-tag">PHEV<i class="wf-tag__cn">插電式油電</i></span></div>
           </div>
-          <p class="home-model__desc">為都會而生的高效油電休旅，前衛質感車室。</p>
+          <p class="home-model__desc">從容穿行都會，設計與油電兼備的中型豪華休旅。</p>
           <span class="home-model__cta">車款介紹 →</span>
         </a>
         <a class="home-model" href="#">
           <div class="wf-img home-model__media"><span class="wf-img__label">RX KEY VISUAL</span></div>
           <div class="home-model__row">
             <span class="home-model__name">RX</span>
-            <div class="home-model__tags"><span class="wf-tag">HEV</span><span class="wf-tag">PHEV</span></div>
+            <div class="home-model__tags"><span class="wf-tag">HEV<i class="wf-tag__cn">油電混合</i></span><span class="wf-tag">PHEV<i class="wf-tag__cn">插電式油電</i></span></div>
           </div>
-          <p class="home-model__desc">旗艦級豪華休旅，純粹駕馭與從容氣度的平衡。</p>
+          <p class="home-model__desc">從容穿行都會，設計與油電兼備的中型豪華休旅。</p>
           <span class="home-model__cta">車款介紹 →</span>
         </a>
         <a class="home-model" href="#">
           <div class="wf-img home-model__media"><span class="wf-img__label">LM KEY VISUAL</span></div>
           <div class="home-model__row">
             <span class="home-model__name">LM</span>
-            <div class="home-model__tags"><span class="wf-tag">HEV</span></div>
+            <div class="home-model__tags"><span class="wf-tag">HEV<i class="wf-tag__cn">油電混合</i></span></div>
           </div>
-          <p class="home-model__desc">移動的頂級會客廳，重新定義後座的尊榮。</p>
+          <p class="home-model__desc">移動中的頭等艙，陸上頂級豪華 MPV。</p>
           <span class="home-model__cta">車款介紹 →</span>
         </a>
         <a class="home-model" href="#">
           <div class="wf-img home-model__media"><span class="wf-img__label">RZ KEY VISUAL</span></div>
           <div class="home-model__row">
             <span class="home-model__name">RZ</span>
-            <div class="home-model__tags"><span class="wf-tag wf-tag--solid">BEV</span></div>
+            <div class="home-model__tags"><span class="wf-tag wf-tag--solid">BEV<i class="wf-tag__cn">純電</i></span></div>
           </div>
-          <p class="home-model__desc">純電旗艦，承襲 LEXUS 駕馭哲學的電動體驗。</p>
+          <p class="home-model__desc">駛向未來的優雅，Lexus 首款純電豪華休旅。</p>
           <span class="home-model__cta">車款介紹 →</span>
         </a>
       </div>
@@ -167,11 +234,7 @@
         </div>
         <div class="home-dir__col">
           <span class="wf-eyebrow">SUV / MPV</span>
-          <div class="home-dir__list"><a class="home-dir__m" href="#">UX</a><a class="home-dir__m" href="#">LBX</a><a class="home-dir__m" href="nx.html">NX</a><a class="home-dir__m" href="#">RX</a><a class="home-dir__m" href="#">LM</a></div>
-        </div>
-        <div class="home-dir__col">
-          <span class="wf-eyebrow">COUPE</span>
-          <div class="home-dir__list"><a class="home-dir__m" href="#">LC</a></div>
+          <div class="home-dir__list"><a class="home-dir__m" href="#">LBX</a><a class="home-dir__m" href="#">UX</a><a class="home-dir__m" href="nx.html">NX</a><a class="home-dir__m" href="#">RX</a><a class="home-dir__m" href="#">LM</a></div>
         </div>
         <div class="home-dir__col">
           <span class="wf-eyebrow">BEV</span>
@@ -192,9 +255,9 @@
       </button>
       <div class="wf-footer__links" data-sitemap>
         <ul><li>購車優惠</li><li>試乘・諮詢</li><li>據點查詢</li><li>尊榮科技展演</li><li>認證中古車</li><li>聯絡我們</li></ul>
-        <ul><li>品牌介紹</li><li>創新科技</li><li>駕馭樂趣</li><li>榮耀里程碑</li></ul>
-        <ul><li>NX</li><li>RX</li><li>ES</li><li>LM</li><li>RZ</li></ul>
-        <ul><li>售後服務</li><li>保固資訊</li><li>原廠精品</li></ul>
+        <ul><li>品牌介紹</li><li>創新科技</li><li>駕馭樂趣</li><li>榮耀里程碑</li><li>LEXUS 驚探生活誌</li><li>LEXUS LINE</li><li>LEXUS ELECTRIFIED</li><li>LEXUS LINK</li><li>Lexus Plus App</li><li>車主尊享活動</li><li>HOTAI購</li><li>LEXUS Careers</li></ul>
+        <ul><li>車主尊榮回饋</li><li>保證方案 / 延長保證</li><li>服務特色</li><li>保養計劃</li><li>電動車專區</li></ul>
+        <ul><li>和泰Points 點數</li><li>原廠機油</li><li>原廠換胎</li><li>板噴服務</li><li>服務新訊</li></ul>
         <ul><li>最新消息</li><li>車主專區</li><li>購車和泰Pay支付</li></ul>
       </div>
       <div class="wf-footer__bar">
@@ -206,8 +269,9 @@
     </footer>
 
     <!-- 固定 CTA（always-on）· 同車款介紹內頁 -->
-    <div class="nx-fab home-fab" data-screen-label="固定CTA" style="grid-template-columns:repeat(2,1fr)">
+    <div class="nx-fab home-fab" data-screen-label="固定CTA" style="grid-template-columns:repeat(3,1fr)">
       <button class="nx-fab__btn">購車優惠</button>
+      <button class="nx-fab__btn">據點查詢</button>
       <button class="nx-fab__btn nx-fab__btn--primary">試乘諮詢</button>
     </div>
 
@@ -274,6 +338,35 @@
     };
     window.wfSitemapSync();
   })();
+  // HERO 主視覺輪播（auto 6s · 箭頭／圓點手動 · hover 暫停）
+  (function () {
+    var root = document.querySelector('[data-hero-carousel]'); if (!root) return;
+    var track = root.querySelector('[data-hero-track]');
+    var slides = root.querySelectorAll('[data-hero-slide]');
+    var dots = root.querySelectorAll('[data-hero-dot]');
+    var n = slides.length, i = 0, timer = null, playing = true;
+    var playBtn = root.querySelector('[data-hero-play]');
+    function go(to) {
+      i = (to + n) % n;
+      track.style.transform = 'translateX(' + (-i * 100) + '%)';
+      dots.forEach(function (d, k) { d.classList.toggle('is-active', k === i); });
+    }
+    function run() { stop(); timer = setInterval(function () { go(i + 1); }, 6000); }
+    function stop() { if (timer) clearInterval(timer); timer = null; }
+    function setPlaying(p) {
+      playing = p;
+      playBtn.textContent = p ? '❙❙' : '▶';
+      playBtn.setAttribute('aria-label', p ? '暫停輪播' : '播放輪播');
+      if (p) run(); else stop();
+    }
+    playBtn.addEventListener('click', function () { setPlaying(!playing); });
+    root.querySelector('[data-hero-prev]').addEventListener('click', function () { go(i - 1); if (playing) run(); });
+    root.querySelector('[data-hero-next]').addEventListener('click', function () { go(i + 1); if (playing) run(); });
+    dots.forEach(function (d) { d.addEventListener('click', function () { go(+d.getAttribute('data-hero-dot')); if (playing) run(); }); });
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', function () { if (playing) run(); });
+    go(0); setPlaying(true);
+  })();
 </script>
 
 <!-- Tweaks -->
@@ -288,7 +381,7 @@
     React.useEffect(() => { window.__wf.device = t.device; window.__wf.fit = t.fitWidth; window.wfApply(); }, [t.device, t.fitWidth]);
     return (
       <TweaksPanel title="Tweaks">
-        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>首頁 Homepage</span><b>v1.6</b></div>
+        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>首頁 Homepage</span><b>v1.7</b></div>
         <TweakSection label="Device · 裝置尺寸" />
         <TweakRadio label="Viewport" value={t.device}
           options={[{ value: 'mobile', label: '手機' }, { value: 'tablet', label: '平板' }, { value: 'desktop', label: '桌機' }]}
