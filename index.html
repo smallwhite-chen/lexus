@@ -88,16 +88,17 @@
         </div>
       </div>
 
+      <div class="home-hero__dots" data-hero-dots>
+        <button class="home-hero__bar is-active" data-hero-dot="0" aria-label="第 1 張"><span class="home-hero__barfill"></span></button>
+        <button class="home-hero__bar" data-hero-dot="1" aria-label="第 2 張"><span class="home-hero__barfill"></span></button>
+        <button class="home-hero__bar" data-hero-dot="2" aria-label="第 3 張"><span class="home-hero__barfill"></span></button>
+        <button class="home-hero__bar" data-hero-dot="3" aria-label="第 4 張"><span class="home-hero__barfill"></span></button>
+        <button class="home-hero__bar" data-hero-dot="4" aria-label="第 5 張"><span class="home-hero__barfill"></span></button>
+      </div>
+
       <div class="home-hero__controls">
-        <button class="home-hero__arw home-hero__play" data-hero-play aria-label="暫停輪播">❙❙</button>
-        <div class="home-hero__dots" data-hero-dots>
-          <button class="home-hero__dot is-active" data-hero-dot="0" aria-label="第 1 張"></button>
-          <button class="home-hero__dot" data-hero-dot="1" aria-label="第 2 張"></button>
-          <button class="home-hero__dot" data-hero-dot="2" aria-label="第 3 張"></button>
-          <button class="home-hero__dot" data-hero-dot="3" aria-label="第 4 張"></button>
-          <button class="home-hero__dot" data-hero-dot="4" aria-label="第 5 張"></button>
-        </div>
         <button class="home-hero__arw home-hero__arw--prev" data-hero-prev aria-label="上一張">‹</button>
+        <button class="home-hero__arw home-hero__play" data-hero-play aria-label="暫停輪播">❙❙</button>
         <button class="home-hero__arw home-hero__arw--next" data-hero-next aria-label="下一張">›</button>
       </div>
     </section>
@@ -349,22 +350,49 @@
     function go(to) {
       i = (to + n) % n;
       track.style.transform = 'translateX(' + (-i * 100) + '%)';
-      dots.forEach(function (d, k) { d.classList.toggle('is-active', k === i); });
+      dots.forEach(function (d, k) {
+        var active = k === i;
+        d.classList.toggle('is-active', active);
+        var fill = d.querySelector('.home-hero__barfill');
+        if (!fill) return;
+        // reset
+        fill.style.transition = 'none';
+        fill.style.width = '0%';
+        if (active && playing) {
+          void fill.offsetWidth; // reflow
+          fill.style.transition = 'width 5s linear';
+          fill.style.width = '100%';
+        }
+      });
     }
-    function run() { stop(); timer = setInterval(function () { go(i + 1); }, 6000); }
+    function run() { stop(); timer = setInterval(function () { go(i + 1); }, 5000); }
+    function freezeFill() {
+      var d = dots[i]; if (!d) return;
+      var fill = d.querySelector('.home-hero__barfill'); if (!fill) return;
+      var w = getComputedStyle(fill).width;
+      fill.style.transition = 'none';
+      fill.style.width = w;
+    }
+    function resumeFill() {
+      var d = dots[i]; if (!d) return;
+      var fill = d.querySelector('.home-hero__barfill'); if (!fill) return;
+      void fill.offsetWidth;
+      fill.style.transition = 'width 5s linear';
+      fill.style.width = '100%';
+    }
     function stop() { if (timer) clearInterval(timer); timer = null; }
     function setPlaying(p) {
       playing = p;
       playBtn.textContent = p ? '❙❙' : '▶';
       playBtn.setAttribute('aria-label', p ? '暫停輪播' : '播放輪播');
-      if (p) run(); else stop();
+      if (p) { resumeFill(); run(); } else { stop(); freezeFill(); }
     }
     playBtn.addEventListener('click', function () { setPlaying(!playing); });
     root.querySelector('[data-hero-prev]').addEventListener('click', function () { go(i - 1); if (playing) run(); });
     root.querySelector('[data-hero-next]').addEventListener('click', function () { go(i + 1); if (playing) run(); });
     dots.forEach(function (d) { d.addEventListener('click', function () { go(+d.getAttribute('data-hero-dot')); if (playing) run(); }); });
-    root.addEventListener('mouseenter', stop);
-    root.addEventListener('mouseleave', function () { if (playing) run(); });
+    root.addEventListener('mouseenter', function () { stop(); freezeFill(); });
+    root.addEventListener('mouseleave', function () { if (playing) { resumeFill(); run(); } });
     go(0); setPlaying(true);
   })();
 </script>
@@ -381,7 +409,7 @@
     React.useEffect(() => { window.__wf.device = t.device; window.__wf.fit = t.fitWidth; window.wfApply(); }, [t.device, t.fitWidth]);
     return (
       <TweaksPanel title="Tweaks">
-        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>首頁 Homepage</span><b>v1.7</b></div>
+        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>首頁 Homepage</span><b>v1.8</b></div>
         <TweakSection label="Device · 裝置尺寸" />
         <TweakRadio label="Viewport" value={t.device}
           options={[{ value: 'mobile', label: '手機' }, { value: 'tablet', label: '平板' }, { value: 'desktop', label: '桌機' }]}

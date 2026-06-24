@@ -848,7 +848,7 @@
     }
     document.addEventListener('click', e => {
       const z = e.target.closest('.nx-zoom');
-      if (z && !e.target.closest('button')) {
+      if (z && !e.target.closest('button') && !z.closest('#nx-features')) {
         $('[data-lblabel]', lb).textContent = (z.dataset.zoom || 'IMAGE') + ' · 放大檢視';
         lb.classList.add('is-open');
       }

@@ -38,9 +38,9 @@
 .home-hero__slide { position: relative; flex: 0 0 100%; }
 .home-hero__overlay {
   position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end;
-  gap: 16px; padding: 0 64px 72px;
+  gap: 16px; padding: 0 64px 100px;
 }
-.wf-canvas[data-device="mobile"] .home-hero__overlay { padding: 0 18px 64px; }
+.wf-canvas[data-device="mobile"] .home-hero__overlay { padding: 0 18px 104px; }
 .home-hero__eyebrow { font-family: var(--wf-mono); font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: rgba(255,255,255,.78); }
 .home-hero__title { font-size: 52px; font-weight: 300; line-height: 1.04; letter-spacing: .01em; color: #fff; max-width: 16ch; text-wrap: balance; }
 .wf-canvas[data-device="tablet"] .home-hero__title { font-size: 42px; }
@@ -53,12 +53,15 @@
 /* 深色底 CTA（白色描邊）*/
 .wf-btn--ondark { border-color: rgba(255,255,255,.55); color: #fff; }
 .wf-btn--ondark:hover { background: #fff; color: var(--wf-ink); border-color: #fff; }
-/* 控制列：上一張 · 圓點 · 下一張 並列於右下 */
+/* 控制列：上一張 · 播放/暫停 · 下一張 並列於右下 */
 .home-hero__controls {
   position: absolute; right: 64px; bottom: 32px; z-index: 2;
   display: flex; align-items: center; gap: 16px;
 }
-.wf-canvas[data-device="mobile"] .home-hero__controls { right: 0; left: 0; bottom: 22px; justify-content: center; gap: 12px; }
+.wf-canvas[data-device="mobile"] .home-hero__controls { right: 0; left: 0; bottom: 20px; justify-content: center; gap: 18px; }
+/* 頁次列置中於版位下方 */
+.home-hero__dots { position: absolute; left: 50%; bottom: 32px; transform: translateX(-50%); z-index: 2; display: flex; gap: 10px; }
+.wf-canvas[data-device="mobile"] .home-hero__dots { bottom: 60px; }
 /* 左右切換箭頭（小尺寸，與頁次列同高）*/
 .home-hero__arw {
   width: 30px; height: 30px; border-radius: 50%; flex: 0 0 auto;
@@ -69,14 +72,19 @@
 }
 .home-hero__arw:hover { background: rgba(20,20,22,.62); border-color: #fff; }
 .home-hero__play { font-size: 11px; letter-spacing: .04em; }
-/* 分頁圓點 */
-.home-hero__dots { display: flex; gap: 10px; }
-.home-hero__dot {
-  width: 9px; height: 9px; border-radius: 50%; padding: 0; cursor: pointer;
-  background: transparent; border: 1px solid rgba(255,255,255,.7);
-  transition: background .15s, transform .15s;
+/* 頁次進度條 */
+.home-hero__dots { gap: 14px; align-items: center; }
+.home-hero__bar {
+  position: relative; width: 64px; height: 3px; padding: 0; cursor: pointer;
+  border: 0; border-radius: 2px; overflow: hidden;
+  background: rgba(255,255,255,.35);
 }
-.home-hero__dot.is-active { background: #fff; transform: scale(1.18); }
+.home-hero__barfill {
+  position: absolute; inset: 0; width: 0%;
+  background: #fff; transform-origin: left center;
+}
+.home-hero__bar.is-active .home-hero__barfill { width: 100%; transition: width 5s linear; }
+.wf-canvas[data-device="mobile"] .home-hero__bar { width: 40px; }
 
 /* ============================================================
    2 · 重點車款（3–4 款）
