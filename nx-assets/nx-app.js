@@ -34,17 +34,11 @@
      ============================================================ */
   function renderHighlights() {
     const mount = $('#nx-highlights'); if (!mount) return;
-    const spanClass = ['nx-hl--feature', '', '', 'nx-hl--banner'];
-    D.highlights.forEach((h, i) => {
-      const card = el('article', 'nx-hl ' + (spanClass[i] || ''));
-      const media = img(h.cat + ' · ' + h.en, { ratio: '16/10' });
-      media.classList.add('nx-hl__media');
-      var lbl = media.querySelector('.wf-img__label'); if (lbl) lbl.remove();
-      card.appendChild(media);
-      const body = el('div', 'nx-hl__content');
-      body.innerHTML =
-        '<div class="nx-hl__big">' + (h.bigHtml || ('<b>' + h.value + '</b><span>' + h.title + '</span>')) + '</div>';
-      card.appendChild(body);
+    D.highlights.forEach((h) => {
+      const card = el('article', 'nx-hl');
+      card.innerHTML =
+        '<span class="nx-hl__label">' + h.title + '</span>' +
+        '<span class="nx-hl__text">' + h.text + '</span>';
       mount.appendChild(card);
     });
   }
@@ -156,12 +150,6 @@
           '<h4 class="nx-fcard__title">' + it.t + '</h4>';
         const desc = el('p', 'wf-body'); desc.style.fontSize = '14px'; desc.textContent = it.d;
         tx.appendChild(desc);
-        // 含 sheet 的特色項目：新增「瞭解更多」按鈕 + BottomSheet
-        if (it.sheet && it.sheet.length) {
-          const more = el('button', 'wf-btn wf-btn--secondary wf-btn--sm nx-fcard__more', '瞭解更多 ›');
-          more.addEventListener('click', () => openFeatSheet(f, it));
-          tx.appendChild(more);
-        }
         card.appendChild(tx);
         track.appendChild(card);
       });
@@ -751,7 +739,7 @@
     });
 
     // 規格 / 配備（捲動至對應區段）
-    [['nx-spec-section', '規格'], ['nx-equip-section', '配備']].forEach(([id, label]) => {
+    [['nx-equip-section', '配備'], ['nx-spec-section', '規格']].forEach(([id, label]) => {
       const b = el('button', 'nx-featnav__btn', label);
       b.dataset.target = id;
       b.addEventListener('click', () => { scrollToFeat(id); centerNavBtn(b); });
@@ -823,8 +811,8 @@
       '<div class="nx-catmenu__grid">' +
         mandatory.map(f => item('feat-' + f.id, f.cat, f.en)).join('') +
         optional.map(f => item('feat-' + f.id, f.cat, f.en, optional.length === 1)).join('') +
-        item('nx-spec-section', '規格', 'SPECIFICATIONS') +
         item('nx-equip-section', '配備', 'EQUIPMENT') +
+        item('nx-spec-section', '規格', 'SPECIFICATIONS') +
       '</div>';
     $$('[data-go]', menu).forEach(b => b.addEventListener('click', () => { closeCatMenu(); setTimeout(() => scrollToFeat(b.dataset.go), 60); }));
     const mb = $('[data-featmore]'); if (mb) mb.setAttribute('aria-expanded', 'true');

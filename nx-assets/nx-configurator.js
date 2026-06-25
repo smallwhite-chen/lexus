@@ -33,7 +33,7 @@
     { id: 'black', hex: '#1c1f24', name: '尊爵黑', en: 'NOBLE BLACK' },
   ];
   const TRIMS = [
-    { id: 'art', name: '光雕藝塑飾板', en: 'ART' },
+    { id: 'art', name: '光雕藝塑飾板', en: 'ART', hex: '#9a9488' },
   ];
   // 版本為 gate：限定後續每步可選範圍
   const VERSIONS = [
@@ -75,7 +75,7 @@
 
   const state = {
     version: '450h', extColor: 'green', wheel: 'w18', intColor: 'red', trim: 'art',
-    step: 0, view: 'ext', frameExt: 0, frameInt: 0, detail: null, mode: 'config',
+    step: 0, view: 'ext', frameExt: 0, frameInt: 0, frameTrim: 0, detail: null, mode: 'config',
   };
   let overlay = null, entryMount = null;
 
@@ -87,10 +87,10 @@
   const trimObj = () => byId(TRIMS, state.trim) || {};
 
   const framesOf = (view) => view === 'ext' ? EXT_FRAMES : INT_FRAMES;
-  const curFrame = (view) => view === 'ext' ? state.frameExt : state.frameInt;
+  const curFrame = (view) => view === 'ext' ? state.frameExt : view === 'trim' ? state.frameTrim : state.frameInt;
   function setFrame(view, f) {
     const n = framesOf(view); f = ((Math.round(f) % n) + n) % n;
-    if (view === 'ext') state.frameExt = f; else state.frameInt = f;
+    if (view === 'ext') state.frameExt = f; else if (view === 'trim') state.frameTrim = f; else state.frameInt = f;
   }
   // frame → 視角名稱
   function angleInfo(view, frame) {
@@ -98,6 +98,12 @@
       const cn = ['正前', '前 3/4', '側面', '後 3/4', '正後', '後 3/4', '側面', '前 3/4'];
       const en = ['FRONT', 'FRONT 3/4', 'SIDE', 'REAR 3/4', 'REAR', 'REAR 3/4', 'SIDE', 'FRONT 3/4'];
       const i = Math.round(frame / EXT_FRAMES * 8) % 8;
+      return { cn: cn[i], en: en[i] };
+    }
+    if (view === 'trim') {
+      const cn = ['中控飾板', '門板飾板', '排檔飾板', '前座飾板'];
+      const en = ['DASH TRIM', 'DOOR TRIM', 'CONSOLE TRIM', 'SEAT TRIM'];
+      const i = Math.round(frame / INT_FRAMES * 4) % 4;
       return { cn: cn[i], en: en[i] };
     }
     const cn = ['中控台', '前座艙', '中央扶手', '後座', '飾板', '車門板'];
@@ -123,7 +129,6 @@
     const canvas = el('div', 'nxc-canvas');
     canvas.innerHTML =
       '<div class="wf-img wf-img--plain" data-stageimg>' +
-        '<span class="nxc-stage__hint"><span class="ic">↔</span> 左右拖曳旋轉</span>' +
         '<span class="wf-img__label" data-stagelabel></span>' +
         '<button class="nxc-stage__zoom" data-zoom><span class="ic">⤢</span> 放大看細節</button>' +
       '</div>';
@@ -131,7 +136,6 @@
     wrap.appendChild(canvas);
 
     canvas.querySelector('[data-zoom]').addEventListener('click', openZoom);
-    attachDrag(wrap, view);
     return wrap;
   }
 
@@ -162,14 +166,16 @@
 
   // 依目前 state 更新舞台（含淡入回饋）
   function paintStage(wrap, view) {
-    const interior = view === 'int';
+    const interior = view === 'int' || view === 'trim';
     const frame = curFrame(view);
     const ang = angleInfo(view, frame);
     const v = ver();
     const imgEl = wrap.querySelector('[data-stageimg]');
     const labelEl = wrap.querySelector('[data-stagelabel]');
 
-    if (interior) {
+    if (view === 'trim') {
+      labelEl.textContent = v.name + ' · ' + ang.cn + ' · ' + trimObj().name;
+    } else if (interior) {
       labelEl.textContent = v.name + ' · ' + ang.cn + ' · ' + intName() + ' · ' + trimObj().name;
     } else {
       labelEl.textContent = v.name + ' · ' + ang.cn + ' · ' + extName() + ' · ' + wheelObj().en;
@@ -333,19 +339,25 @@
     const split = device() === 'desktop';
 
     const root = el('div', 'nxc-flat'); root.dataset.mode = split ? 'split' : 'mobile';
+    const top = el('div', 'nxc-flat__top');
     const left = el('div', 'nxc-flat__left');
-    const right = el('div', 'nxc-flat__right');
     const stageHost = el('div', 'nxc-flat__stage');
     const imgnav = el('div', 'nxc-flat__imgnav');
     const controls = el('div', 'nxc-flat__controls');
     const summary = el('div', 'nxc-flat__summary');
-    left.appendChild(stageHost); left.appendChild(imgnav);
-    right.appendChild(controls); /* summary 摘要區已移除 */
-    root.appendChild(left); root.appendChild(right);
+    const belowStage = el('div', 'nxc-flat__belowstage');
+    const swname = el('div', 'nxc-flat__swname');
+    const swrow = el('div', 'nxc-flat__swrow');
+    left.appendChild(stageHost); left.appendChild(belowStage);
+    belowStage.appendChild(swname);
+    belowStage.appendChild(swrow);
+    top.appendChild(buildVersionPicker()); /* 車型下拉（pill 樣式）*/
+    root.appendChild(top); root.appendChild(left);
     mount.appendChild(root);
 
     let stageWrap = null;
     let openCat = null;
+    let togEl = null;
 
     function mountStage() {
       if (stageWrap) stageWrap.remove();
@@ -355,19 +367,17 @@
       const tog = el('div', 'nxc-flat__viewtog');
       tog.innerHTML =
         '<button data-vt="ext"' + (state.view === 'ext' ? ' aria-selected="true"' : '') + '>外觀</button>' +
-        '<button data-vt="int"' + (state.view === 'int' ? ' aria-selected="true"' : '') + '>內裝</button>';
+        '<button data-vt="int"' + (state.view === 'int' ? ' aria-selected="true"' : '') + '>內裝</button>' +
+        '<button data-vt="trim"' + (state.view === 'trim' ? ' aria-selected="true"' : '') + '>飾板</button>';
       tog.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
         const v = b.dataset.vt; if (v === state.view) return;
         state.view = v; setFrame(v, v === 'ext' ? 6 : 0);
-        repaintStage(); paintImageNav();
+        repaintStage(); paintImageNav(); paintColorRow();
       }));
-      canvas.appendChild(tog);
-      const zb = el('button', 'nxc-flat__zoombtn');
-      zb.setAttribute('aria-label', '放大檢視');
-      zb.title = '放大檢視';
-      zb.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"></circle><line x1="15.5" y1="15.5" x2="21" y2="21"></line><line x1="10.5" y1="7.5" x2="10.5" y2="13.5"></line><line x1="7.5" y1="10.5" x2="13.5" y2="10.5"></line></svg>';
-      zb.addEventListener('click', openReveal);
-      canvas.appendChild(zb);
+      if (togEl) togEl.remove();
+      togEl = tog;
+      belowStage.insertBefore(tog, swname);
+      canvas.appendChild(imgnav);
       stageHost.appendChild(stageWrap);
       paintStage(stageWrap, state.view);
     }
@@ -378,10 +388,10 @@
 
     function paintImageNav() {
       imgnav.innerHTML = '';
-      const count = state.view === 'ext' ? 8 : 6;
+      const count = 3;
       const frames = framesOf(state.view);
       const cur = ((Math.round(curFrame(state.view) / frames * count) % count) + count) % count;
-      if (split) {
+      if (false) { // 桌機改用與手機／平板相同的圓點列
         const prev = el('button', 'nxc-imgnav__nav', '‹');
         const vp = el('div', 'nxc-imgnav__vp');
         const track = el('div', 'nxc-imgnav__track');
@@ -442,7 +452,7 @@
         if (id === state.version) return;
         state.version = id; applyVersionGate(); applyFocus(STEPS[0]);
       } else { setStateCat(catId, id); applyFocus(stepFor(catId)); }
-      repaintStage(); paintImageNav(); paintSummary(); refreshAccHeads();
+      repaintStage(); paintImageNav(); paintSummary(); refreshAccHeads(); paintColorRow();
       if (catId === 'version' && openCat && openCat !== 'version') {
         const p = controls.querySelector('.nxc-acc[data-id="' + openCat + '"]');
         if (p) p._fill();
@@ -542,7 +552,7 @@
         setStateCat(catId, staged);
         if (catId === 'version') applyVersionGate();
         applyFocus(stepFor(catId)); // 切視角 + 角度 → 關閉時才換上方大圖
-        repaintStage(); paintImageNav(); paintSummary(); refreshButtons();
+        repaintStage(); paintImageNav(); paintSummary(); refreshButtons(); paintColorRow();
         sheet.classList.remove('is-open');
         document.documentElement.style.overflow = '';
         setTimeout(() => sheet.remove(), 320);
@@ -555,16 +565,78 @@
     function buildControls() {
       controls.innerHTML = '';
       if (split) {
-        ['version', 'extColor', 'wheel', 'intColor', 'trim'].forEach(id => controls.appendChild(accPanel(id)));
+        ['version'].forEach(id => controls.appendChild(accPanel(id)));
       } else {
         const grid = el('div', 'nxc-btns');
-        ['version', 'extColor', 'wheel', 'intColor', 'trim'].forEach(id => grid.appendChild(catButton(id)));
+        ['version'].forEach(id => grid.appendChild(catButton(id)));
         controls.appendChild(grid);
       }
     }
 
+    function buildVersionPicker() {
+      const wrap = el('div', 'nxc-vpick');
+      const trigger = el('button', 'nxc-vpick__trigger');
+      const menu = el('div', 'nxc-vpick__menu');
+      function renderTrigger() {
+        trigger.innerHTML =
+          '<span class="nxc-vpick__lbl">車型版本</span>' +
+          '<span class="nxc-vpick__val">' + ver().name + '</span>' +
+          '<span class="nxc-vpick__chev" aria-hidden="true">˅</span>';
+      }
+      function renderMenu() {
+        menu.innerHTML = '';
+        VERSIONS.forEach(v => {
+          const it = el('button', 'nxc-vpick__opt',
+            '<span class="nxc-vpick__optname">' + v.name + '</span>' +
+            '<span class="nxc-vpick__optsub">' + v.power + '</span>');
+          it.setAttribute('aria-selected', v.id === state.version ? 'true' : 'false');
+          it.addEventListener('click', (e) => {
+            e.stopPropagation();
+            wrap.classList.remove('is-open');
+            if (v.id === state.version) return;
+            state.version = v.id; applyVersionGate(); applyFocus(STEPS[0]);
+            renderTrigger(); renderMenu();
+            repaintStage(); paintImageNav(); paintColorRow();
+            if (split) refreshAccHeads(); else refreshButtons();
+          });
+          menu.appendChild(it);
+        });
+      }
+      trigger.addEventListener('click', (e) => { e.stopPropagation(); wrap.classList.toggle('is-open'); });
+      document.addEventListener('click', () => wrap.classList.remove('is-open'));
+      renderTrigger(); renderMenu();
+      wrap.appendChild(trigger); wrap.appendChild(menu);
+      return wrap;
+    }
+
+    function paintColorRow() {
+      swrow.innerHTML = '';
+      const v = ver();
+      let ids, pool, sel;
+      if (state.view === 'int') { ids = v.intColors; pool = INT_COLORS; sel = state.intColor; }
+      else if (state.view === 'trim') { ids = v.trims; pool = TRIMS; sel = state.trim; }
+      else { ids = v.colors; pool = EXT_COLORS; sel = state.extColor; }
+      swname.textContent = (byId(pool, sel) || {}).name || '';
+      ids.forEach(id => {
+        const c = byId(pool, id) || {};
+        const b = el('button', 'nxc-flat__sw',
+          '<span class="nxc-flat__swdot" style="background:' + (c.hex || '#9a9488') + '"></span>');
+        b.title = c.name || '';
+        b.setAttribute('aria-selected', id === sel ? 'true' : 'false');
+        b.addEventListener('click', () => {
+          if (state.view === 'int') state.intColor = id;
+          else if (state.view === 'trim') state.trim = id;
+          else state.extColor = id;
+          paintColorRow(); repaintStage();
+          if (split) refreshAccHeads(); else refreshButtons();
+        });
+        swrow.appendChild(b);
+      });
+    }
+
     mountStage();
     paintImageNav();
+    paintColorRow();
     buildControls();
     paintSummary();
     if (split) {
@@ -572,7 +644,7 @@
       if (p) { openCat = 'extColor'; p._fill(); p.classList.add('is-open'); }
     }
     mount._repaint = () => {
-      repaintStage(); paintImageNav(); paintSummary();
+      repaintStage(); paintImageNav(); paintSummary(); paintColorRow();
       if (split) refreshAccHeads(); else refreshButtons();
     };
   }
@@ -796,7 +868,6 @@
     const overlayInfo = el('div', 'nxc-reveal__overlay');
     const specPairs = [
       ['外觀配色', extName()],
-      ['輪圈樣式', wheelObj().name],
       ['內裝配色', intName()],
       ['內裝飾板', trimObj().name],
       ['動力型式', ver().power],
@@ -839,7 +910,7 @@
     }
     const ang = angleInfo(state.view, curFrame(state.view));
     lb.querySelector('[data-zlabel]').textContent =
-      'PINCH ZOOM · ' + ver().name + ' · ' + ang.cn + ' · ' + (state.view === 'int' ? intName() : extName());
+      'PINCH ZOOM · ' + ver().name + ' · ' + ang.cn + ' · ' + (state.view === 'trim' ? trimObj().name : state.view === 'int' ? intName() : extName());
     lb.classList.add('is-open');
   }
 

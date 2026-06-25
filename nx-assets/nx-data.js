@@ -9,10 +9,10 @@ window.NXData = (function () {
 
   // ── 車款亮點（跨類別 3–5）──
   const highlights = [
-    { en: 'PERFORMANCE', cat: '性能', title: '2.5L 雙動力', value: '309 PS', bigHtml: '<b>2.5</b><span>升 L4引擎</span><b>309</b><span>PS</span>', note: '最大綜效馬力 · HEV / PHEV 雙選擇' },
-    { en: 'SAFETY', cat: '安全', title: 'Lexus Safety System', value: '+3.0', note: '智能主動安全科技全面進化' },
-    { en: 'DESIGN', cat: '外觀', title: 'Spindle Grille', value: '紡錘', note: '無邊際紡錘形水箱護罩' },
-    { en: 'INTERIOR', cat: '內裝', title: 'Tazuna 座艙', value: '14"', note: '以駕駛者為中心的人機介面' },
+    { title: '動力系統', text: '汽油、油電、純電' },
+    { title: '引擎性能', text: '2.5升 L4引擎' },
+    { title: '馬力', text: '309PS' },
+    { title: '安全系統', text: 'Lexus Safety System +3.0' },
   ];
 
   // ── 360 賞車：兩層切換 ──
