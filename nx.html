@@ -50,12 +50,12 @@
       <div class="nx-sechead">
         <h2 class="wf-h2" style="font-size: 22px">全方位主動安全守護，前衛質感車室，為都會而生的高效油電休旅車。</h2>
       </div>
-      <div class="nx-highlights" id="nx-highlights"></div>
+      <div class="nx-highlights" id="nx-highlights" style="padding: 0px 18px"></div>
     </div>
 
     <!-- 2b · 編輯式圖文集錦 -->
     <div class="wf-container nx-blk">
-      <div class="nx-collage">
+      <div class="nx-collage" style="padding: 0 18px">
         <div class="wf-img wf-img--plain nx-collage__a"><span class="wf-img__label">LIFESTYLE · 16:10</span></div>
         <div class="nx-collage__txt">
           <h2 class="nx-collage__title">自定 未來</h2>
@@ -285,7 +285,7 @@
     }, [t.showCharge, t.showLink]);
     return (
       <TweaksPanel title="Tweaks">
-        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>VERSION</span><b>v1.9</b></div>
+        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>VERSION</span><b>v2.1</b></div>
         <TweakSection label="Device · 裝置尺寸" />
         <TweakRadio label="Viewport" value={t.device}
           options={[{ value: 'mobile', label: '手機' }, { value: 'tablet', label: '平板' }, { value: 'desktop', label: '桌機' }]}
