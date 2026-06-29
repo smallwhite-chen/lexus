@@ -307,6 +307,24 @@ body { margin: 0; }
 .nx-diff { background: rgba(43,59,80,.035); }
 .nx-diff__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--wf-accent); display: inline-block; }
 
+/* 規格／配備表：第三欄停用狀態（ES 僅兩車型） */
+.nx-spec3__colsel select:disabled { color: var(--wf-muted); cursor: not-allowed; opacity: 1; }
+.nx-spec3__v.is-disabled { color: var(--wf-muted); }
+.nx-spec3__v.is-disabled .chev { opacity: .35; }
+.wf-canvas:not([data-device="mobile"]) .nx-spec3__row:not(.nx-spec3__row--head) .nx-spec3__v[data-col="2"] { opacity: .4; }
+
+/* 規格 / 配備 分頁切換（沿用 wf-tabs 底線樣式）*/
+.nx-spectab { margin-top: 20px; margin-bottom: 20px; }
+.nx-spectab .wf-tab { font-size: 16px; font-weight: 600; padding: 12px 22px; }
+
+/* 手機版：頁籤移至「前往全車系比較」按鈕下方 */
+.wf-canvas[data-device="mobile"] #nx-spec-section { display: flex; flex-direction: column; }
+.wf-canvas[data-device="mobile"] #nx-spec-section .nx-sechead { order: 1; }
+.wf-canvas[data-device="mobile"] #nx-spec-section .nx-spec-actions { order: 2; }
+.wf-canvas[data-device="mobile"] #nx-spec-section #nx-spectab { order: 3; align-self: stretch; justify-content: center; }
+.wf-canvas[data-device="mobile"] #nx-spec-section #nx-spec { order: 4; }
+.wf-canvas[data-device="mobile"] #nx-spec-section #nx-spec-equip { order: 4; }
+
 /* ============================================================
    配備表 accordion
    ============================================================ */

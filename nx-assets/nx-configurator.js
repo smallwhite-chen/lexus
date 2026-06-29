@@ -15,40 +15,33 @@
 
   /* ---- 1 · 資料模型（示意；可移入 nx-data.js）-------------- */
   const EXT_COLORS = [
+    { id: 'azure',    hex: '#7d97b5', name: '蒼映藍', spec: '旗艦版專屬' },
+    { id: 'copper',   hex: '#9c6b43', name: '光焰銅', spec: '旗艦版專屬' },
     { id: 'white',    hex: '#f5f5f2', name: 'LFA白',  spec: '全車型適用' },
-    { id: 'titanium', hex: '#837e78', name: '極光鈦', spec: 'F SPORT版專屬' },
+    { id: 'titanium', hex: '#837e78', name: '極光鈦', spec: '全車型適用' },
+    { id: 'silver',   hex: '#bcbfc2', name: '星塵銀', spec: '全車型適用' },
     { id: 'gray',     hex: '#54565e', name: '星耀灰', spec: '全車型適用' },
-    { id: 'blue',     hex: '#1f54c4', name: '星空藍', spec: 'F SPORT版、旗艦版、頂級版、豪華版、菁英版專屬' },
-    { id: 'flame',    hex: '#0d8ec9', name: '極焰藍', spec: 'F SPORT版專屬' },
     { id: 'black',    hex: '#0c0c0d', name: '星熠黑', spec: '全車型適用' },
-    { id: 'red',      hex: '#d11f1f', name: '燦艷紅', spec: 'F SPORT版、頂級版專屬' },
-    { id: 'green',    hex: '#1f3a2a', name: '大地綠', spec: '旗艦版、豪華版專屬' },
   ];
   const WHEELS = [
     { id: 'w18', name: '18吋 銳切雙色鋁圈', en: '18" TWO-TONE' },
   ];
   const INT_COLORS = [
-    { id: 'red',   hex: '#6b2a2a', name: '幻焰紅', en: 'FLARE RED' },
-    { id: 'brown', hex: '#7a5a36', name: '金耀棕', en: 'GOLDEN BROWN' },
+    { id: 'ivory', hex: '#e7e2d8', name: '煥映白', en: 'IVORY WHITE' },
     { id: 'black', hex: '#1c1f24', name: '尊爵黑', en: 'NOBLE BLACK' },
+    { id: 'brown', hex: '#7a5a36', name: '金耀棕', en: 'GOLDEN BROWN' },
   ];
   const TRIMS = [
-    { id: 'art', name: '光雕藝塑飾板', en: 'ART', hex: '#9a9488' },
+    { id: 'art', name: '竹韻光雕', en: 'BAMBOO', hex: '#9a9488' },
   ];
   // 版本為 gate：限定後續每步可選範圍
   const VERSIONS = [
-    { id: '450h', name: 'NX 450h+', power: 'PHEV 插電油電', diff: '純電續航最長 · E-Four 電子四驅', price: 'NT$ 237.5 萬',
-      colors: ['white','titanium','gray','blue','flame','black','red','green'],
-      wheels: ['w18'], intColors: ['red','brown','black'], trims: ['art'] },
-    { id: '350h', name: 'NX 350h', power: 'HEV 油電', diff: 'E-Four 四驅 · 電動記憶座椅', price: 'NT$ 184.0 萬',
-      colors: ['white','titanium','gray','blue','black','red'],
-      wheels: ['w18'], intColors: ['brown','black'], trims: ['art'] },
-    { id: '350', name: 'NX 350', power: '2.4T 汽油渦輪', diff: '渦輪增壓 · 跑格取向', price: 'NT$ 162.0 萬',
-      colors: ['white','gray','blue','flame','black','green'],
-      wheels: ['w18'], intColors: ['black'], trims: ['art'] },
-    { id: '200', name: 'NX 200', power: '2.0 自然進氣', diff: '入門動力 · 前輪驅動', price: 'NT$ 142.0 萬',
-      colors: ['white','gray','black','flame'],
-      wheels: ['w18'], intColors: ['black'], trims: ['art'] },
+    { id: '500e', name: 'ES 500e', power: 'BEV 純電', diff: '純電動力 · 前後雙馬達四驅', price: 'NT$ 205 萬',
+      colors: ['azure','copper','white','titanium','silver','gray','black'],
+      wheels: ['w18'], intColors: ['ivory','black','brown'], trims: ['art'] },
+    { id: '300h', name: 'ES 300h', power: 'HEV 油電', diff: '油電混合 · 高效能低油耗', price: 'NT$ 197 萬',
+      colors: ['white','titanium','silver','gray','black'],
+      wheels: ['w18'], intColors: ['black','brown'], trims: ['art'] },
   ];
 
   // 360 視角：連續 frame（拖曳旋轉）。外觀整圈、內裝半圈示意
@@ -74,7 +67,7 @@
   const device = () => (window.__wf && window.__wf.device) || 'desktop';
 
   const state = {
-    version: '450h', extColor: 'green', wheel: 'w18', intColor: 'red', trim: 'art',
+    version: '500e', extColor: 'white', wheel: 'w18', intColor: 'ivory', trim: 'art',
     step: 0, view: 'ext', frameExt: 0, frameInt: 0, frameTrim: 0, detail: null, mode: 'config',
   };
   let overlay = null, entryMount = null;
@@ -207,7 +200,7 @@
     picker.appendChild(cspec);
 
     const ctaWrap = el('div', 'nxc-entry__cta');
-    const cta = el('button', 'wf-btn wf-btn--primary', '自訂我的 NX ›');
+    const cta = el('button', 'wf-btn wf-btn--primary', '自訂我的 ES ›');
     cta.addEventListener('click', () => open());
     ctaWrap.appendChild(cta);
 

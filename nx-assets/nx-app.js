@@ -388,10 +388,8 @@
   /* ============================================================
      規格表（僅顯示差異 toggle / 基本·進階收合）
      ============================================================ */
-  function renderSpec() {
-    const mount = $('#nx-spec'); if (!mount) return;
-    const S = D.spec;
-    const G = D.grades;
+  function buildSpecTable(mount, G, S) {
+    if (!mount) return;
     const open = S.groups.map(() => false);
     let cols = [0, 1, 2].slice(0, G.length);
     let sel = Math.max(0, cols.indexOf(G.indexOf(S.model)));
@@ -404,9 +402,12 @@
       '<div class="nx-spec3__row' + (extra || '') + '"><span class="nx-spec3__k">' + k + '</span>' + vCells(arr) + '</div>';
     function headRow() {
       return '<div class="nx-spec3__row nx-spec3__row--head"><span class="nx-spec3__k">車型</span>' +
-        cols.map((gi, c) => '<span class="nx-spec3__v" data-col="' + c + '"><span class="nx-spec3__colsel nx-eqfilter__select"><select data-colsel="' + c + '">' +
-          G.map((g, i) => '<option' + (i === gi ? ' selected' : '') + '>' + g + '</option>').join('') +
-        '</select><span class="chev">▾</span></span></span>').join('') + '</div>';
+        cols.map((gi, c) => {
+          const dis = c === 2;
+          return '<span class="nx-spec3__v' + (dis ? ' is-disabled' : '') + '" data-col="' + c + '"><span class="nx-spec3__colsel nx-eqfilter__select"><select data-colsel="' + c + '"' + (dis ? ' disabled' : '') + '>' +
+            G.map((g, i) => '<option' + (i === gi ? ' selected' : '') + '>' + g + '</option>').join('') +
+          '</select><span class="chev">▾</span></span></span>';
+        }).join('') + '</div>';
     }
     function build() {
       let html = '<div class="nx-spec3" data-sel="' + sel + '">';
@@ -414,7 +415,7 @@
       html += '<div class="nx-spec3__top">' +
         '<div class="nx-spec3__pick"><span class="nx-spec3__toplabel">車型</span>' +
           '<div class="nx-eqfilter__select"><select data-specmodel>' +
-            cols.map((gi, c) => '<option value="' + c + '"' + (c === sel ? ' selected' : '') + '>' + G[gi] + '</option>').join('') +
+            cols.map((gi, c) => '<option value="' + c + '"' + (c === sel ? ' selected' : '') + (c === 2 ? ' disabled' : '') + '>' + G[gi] + '</option>').join('') +
           '</select><span class="chev">▾</span></div></div>' +
         headRow() +
         rowHtml('建議售價（萬）', S.price, ' nx-spec3__row--price') +
@@ -437,9 +438,22 @@
     build();
   }
 
-  /* ============================================================
-     配備表（分類 accordion）
-     ============================================================ */
+  function renderSpec() { buildSpecTable($('#nx-spec'), D.grades, D.spec); }
+
+  /* 規格配備表「配備」分頁：三車型逐項對照 */
+  function renderSpecEquip() { buildSpecTable($('#nx-spec-equip'), D.equipGradesC, D.equipCompare); }
+
+  function wireSpecTabs() {
+    const bar = $('#nx-spectab'); if (!bar || bar.dataset.ready) return;
+    bar.dataset.ready = '1';
+    const spec = $('#nx-spec'), equip = $('#nx-spec-equip');
+    $$('[data-spectab]', bar).forEach(btn => btn.addEventListener('click', () => {
+      $$('[data-spectab]', bar).forEach(b => b.setAttribute('aria-selected', b === btn ? 'true' : 'false'));
+      const isSpec = btn.dataset.spectab === 'spec';
+      if (spec) spec.hidden = !isSpec;
+      if (equip) equip.hidden = isSpec;
+    }));
+  }
   let equipFilter = '';
   let equipTab = 0;
   let equipExpanded = false;
@@ -739,7 +753,7 @@
     });
 
     // 規格 / 配備（捲動至對應區段）
-    [['nx-equip-section', '配備'], ['nx-spec-section', '規格']].forEach(([id, label]) => {
+    [['nx-equip-section', '車款特色'], ['nx-spec-section', '規格配備']].forEach(([id, label]) => {
       const b = el('button', 'nx-featnav__btn', label);
       b.dataset.target = id;
       b.addEventListener('click', () => { scrollToFeat(id); centerNavBtn(b); });
@@ -811,8 +825,8 @@
       '<div class="nx-catmenu__grid">' +
         mandatory.map(f => item('feat-' + f.id, f.cat, f.en)).join('') +
         optional.map(f => item('feat-' + f.id, f.cat, f.en, optional.length === 1)).join('') +
-        item('nx-equip-section', '配備', 'EQUIPMENT') +
-        item('nx-spec-section', '規格', 'SPECIFICATIONS') +
+        item('nx-equip-section', '車款特色', 'EQUIPMENT') +
+        item('nx-spec-section', '規格配備', 'SPECIFICATIONS') +
       '</div>';
     $$('[data-go]', menu).forEach(b => b.addEventListener('click', () => { closeCatMenu(); setTimeout(() => scrollToFeat(b.dataset.go), 60); }));
     const mb = $('[data-featmore]'); if (mb) mb.setAttribute('aria-expanded', 'true');
@@ -866,6 +880,8 @@
     renderFeatures();
     renderCompare();
     renderSpec();
+    renderSpecEquip();
+    wireSpecTabs();
     renderEquip();
     renderFaq();
     initLightbox();

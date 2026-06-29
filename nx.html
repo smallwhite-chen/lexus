@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>LEXUS NX · 車款介紹 Wireframe</title>
+<title>LEXUS ES · 車款介紹 Wireframe</title>
 <link rel="stylesheet" href="ds/styles.css" />
 <link rel="stylesheet" href="nx-assets/nx.css" />
 <link rel="stylesheet" href="nx-assets/nx-configurator.css" />
@@ -35,20 +35,20 @@
     <section class="nx-hero" data-screen-label="Hero">
       <div class="wf-img wf-img--dark nx-hero__media"></div>
       <div class="nx-hero__overlay">
-        <span class="nx-hero__name">NX</span>
-        <span class="nx-hero__sub">由你 自定未來</span>
+        <span class="nx-hero__name">ES</span>
+        <span class="nx-hero__sub">豪華 馭見新格局</span>
         <div class="nx-hero__cta">
           <button class="wf-btn wf-btn--primary">試乘諮詢 ›</button>
           <button class="wf-btn wf-btn--secondary">型錄下載 ›</button>
         </div>
       </div>
     </section>
-    <div class="nx-hero__variants">NX&nbsp;&nbsp;450h+ / 350h / 350 / 200</div>
+    <div class="nx-hero__variants">ES&nbsp;&nbsp;500e / 300h</div>
 
     <!-- 2 · 車款亮點 -->
     <div class="wf-container nx-blk">
       <div class="nx-sechead">
-        <h2 class="wf-h2" style="font-size: 22px">全方位主動安全守護，前衛質感車室，為都會而生的高效油電休旅車。</h2>
+        <h2 class="wf-h2" style="font-size: 22px">沉穩優雅的乘坐享受，電氣化新世代豪華房車。</h2>
       </div>
       <div class="nx-highlights" id="nx-highlights" style="padding: 0px 18px"></div>
     </div>
@@ -58,8 +58,8 @@
       <div class="nx-collage" style="padding: 0 18px">
         <div class="wf-img wf-img--plain nx-collage__a"><span class="wf-img__label">LIFESTYLE · 16:10</span></div>
         <div class="nx-collage__txt">
-          <h2 class="nx-collage__title">自定 未來</h2>
-          <p class="nx-collage__sub">全新世代 NX 融合前衛設計與全擎化動力，以駕駛者為中心的座舱鋪陳每一段旅程；讓每一次啟程，都是對自我的重新定義。</p>
+          <h2 class="nx-collage__title">靜謐之中，自有從容</h2>
+          <p class="nx-collage__sub">推開車門，喧囂被輕輕關在門外。電氣化動力安靜啟程，每一次加速都從容優雅；細膩工藝包覆著座艙，讓日常的通勤與遠行，都成為值得細品的時光。ES 想給你的，從來不只是抵達，而是一路上的安定與自在。</p>
         </div>
         <div class="wf-img wf-img--plain nx-collage__b"><span class="wf-img__label">SCENERY · 3:4</span></div>
       </div>
@@ -70,7 +70,7 @@
       <div class="wf-container nx-blk">
         <div class="nx-sechead nx-sechead--sticky">
           <span class="wf-eyebrow">CONFIGURE</span>
-          <h2 class="wf-h2">自訂我的NX</h2>
+          <h2 class="wf-h2">自訂我的ES</h2>
         </div>
         <div id="nx-selector"></div>
       </div>
@@ -101,7 +101,7 @@
       <div class="wf-container nx-blk">
         <div class="nx-sechead">
           <span class="wf-eyebrow">EQUIPMENT</span>
-          <h2 class="wf-h2">配備表</h2>
+          <h2 class="wf-h2">車款特色表</h2>
         </div>
         <div class="nx-eqfilter" id="nx-equip-filter"></div>
         <div id="nx-equip"></div>
@@ -112,12 +112,17 @@
     <div class="wf-container nx-blk" id="nx-spec-section" style="padding: 48px 18px">
       <div class="nx-sechead">
         <span class="wf-eyebrow">SPECIFICATIONS</span>
-        <h2 class="wf-h2">規格表</h2>
+        <h2 class="wf-h2">規格配備表</h2>
+      </div>
+      <div class="wf-tabs nx-spectab" id="nx-spectab" role="tablist">
+        <button class="wf-tab" data-spectab="spec" role="tab" aria-selected="true">規格</button>
+        <button class="wf-tab" data-spectab="equip" role="tab" aria-selected="false">配備</button>
       </div>
       <div class="nx-spec-actions">
         <button class="wf-btn wf-btn--secondary wf-btn--sm">前往全車系比較 ›</button>
       </div>
       <div id="nx-spec"></div>
+      <div id="nx-spec-equip" hidden></div>
     </div>
 
     <!-- 9 · FAQ -->
@@ -285,7 +290,7 @@
     }, [t.showCharge, t.showLink]);
     return (
       <TweaksPanel title="Tweaks">
-        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>VERSION</span><b>v2.1</b></div>
+        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>VERSION</span><b>v2.2</b></div>
         <TweakSection label="Device · 裝置尺寸" />
         <TweakRadio label="Viewport" value={t.device}
           options={[{ value: 'mobile', label: '手機' }, { value: 'tablet', label: '平板' }, { value: 'desktop', label: '桌機' }]}
