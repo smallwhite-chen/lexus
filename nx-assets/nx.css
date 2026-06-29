@@ -337,7 +337,7 @@ body { margin: 0; }
 .nx-acc.is-open .nx-acc__body { display: block; }
 
 /* 配備車型篩選列 */
-.nx-eqfilter { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+.nx-eqfilter { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; padding-left: 18px; padding-right: 18px; }
 .wf-canvas[data-device="mobile"] .nx-eqfilter { align-items: stretch; flex-direction: column; gap: 8px; }
 .nx-eqfilter__select { position: relative; display: inline-flex; align-items: center; }
 .wf-canvas[data-device="mobile"] .nx-eqfilter__select select { width: 100%; min-width: 0; }
