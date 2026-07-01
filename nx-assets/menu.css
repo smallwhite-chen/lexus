@@ -23,9 +23,10 @@
 
 /* 車款 panel */
 .mm-cats {
-  display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 32px;
+  display: flex; justify-content: flex-start; align-items: stretch; flex-wrap: wrap; gap: 8px 32px;
   max-width: 860px; margin: 0 auto 26px; border-bottom: 1px solid var(--wf-line);
 }
+.mm-compare { margin-left: auto; align-self: center; margin-bottom: 8px; white-space: nowrap; }
 .mm-cat {
   background: none; border: 0; cursor: pointer; position: relative; white-space: nowrap;
   font-family: var(--wf-mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
@@ -116,6 +117,8 @@
 .mm-acc.is-open .mm-acc__head .chev { transform: rotate(180deg); }
 .mm-acc__body { display: none; padding: 0 2px 22px; }
 .mm-acc.is-open .mm-acc__body { display: block; }
+
+.mm-compare-d { margin-bottom: 16px; }
 
 /* drawer 內車款 grid（2 欄）＋ 分類列 */
 .mm-cats--drawer { justify-content: space-between; gap: 0; margin-bottom: 18px; }

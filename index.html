@@ -469,7 +469,7 @@
     var grid = document.querySelector('[data-model-grid]');
     var catsBox = document.querySelector('[data-model-cats]');
     if (grid) grid.innerHTML = MODELS.map(function (m) { return modelCard(m, 'wf-img--plain'); }).join('');
-    if (catsBox) catsBox.innerHTML = catTabs();
+    if (catsBox) catsBox.innerHTML = catTabs() + '<a class="wf-btn wf-btn--ghost wf-btn--sm mm-compare" href="#">前往全車系比較 ›</a>';
     bindCats(catsBox, grid);
     Object.keys(LINKS).forEach(function (k) {
       var box = document.querySelector('[data-links="' + k + '"]');
@@ -513,7 +513,8 @@
         }
         var inner;
         if (item.key === 'models') {
-          inner = '<div class="mm-cats mm-cats--drawer" data-dcats>' + catTabs() + '</div>' +
+          inner = '<a class="wf-btn wf-btn--ghost wf-btn--sm wf-btn--block mm-compare-d" href="#">前往全車系比較 ›</a>' +
+            '<div class="mm-cats mm-cats--drawer" data-dcats>' + catTabs() + '</div>' +
             '<div class="mm-dgrid" data-dgrid>' + MODELS.map(function (m) { return modelCard(m, 'wf-img--plain'); }).join('') + '</div>';
         } else {
           inner = '<div class="mm-dlinks">' + LINKS[item.key].map(linkItem).join('') + '</div>';
@@ -614,7 +615,7 @@
     }, [t.fab]);
     return (
       <TweaksPanel title="Tweaks">
-        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>首頁 Homepage</span><b>v2.6</b></div>
+        <div className="wf-anno" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 2px 10px', marginBottom: '4px', borderBottom: '1px solid var(--wf-line)' }}><span>首頁 Homepage</span><b>v2.6.1</b></div>
         <TweakSection label="Device · 裝置尺寸" />
         <TweakRadio label="Viewport" value={t.device}
           options={[{ value: 'mobile', label: '手機' }, { value: 'tablet', label: '平板' }, { value: 'desktop', label: '桌機' }]}
