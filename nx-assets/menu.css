@@ -1,0 +1,139 @@
+/* ============================================================
+   LEXUS 官網 · 主選單 menu.css
+   桌機 mega menu（下拉大面板）＋ 手機 drawer（全屏抽屜）
+   依現行官網主選單結構；灰階 wireframe，車圖用佔位框
+   裝置切換由 .wf-canvas[data-device] 驅動
+   ============================================================ */
+
+/* 讓 header 與下拉面板成為定位容器 */
+.wf-headwrap { position: relative; z-index: 60; }
+
+/* ---- 桌機 mega menu ---- */
+.mm { position: absolute; left: 0; right: 0; top: 100%; }
+.mm__panel {
+  display: none;
+  background: var(--wf-paper);
+  border-top: 1px solid var(--wf-line);
+  border-bottom: 1px solid var(--wf-line);
+  box-shadow: 0 22px 40px -28px rgba(20, 24, 30, .28);
+  padding: 34px 32px 40px;
+}
+.mm__panel.is-open { display: block; }
+.mm__inner { max-width: var(--wf-maxw); margin: 0 auto; }
+
+/* 車款 panel */
+.mm-cats {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 32px;
+  max-width: 860px; margin: 0 auto 26px; border-bottom: 1px solid var(--wf-line);
+}
+.mm-cat {
+  background: none; border: 0; cursor: pointer; position: relative; white-space: nowrap;
+  font-family: var(--wf-mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--wf-ink-3); padding: 0 2px 14px;
+}
+.mm-cat:hover { color: var(--wf-ink-2); }
+.mm-cat[aria-selected="true"] { color: var(--wf-ink); font-weight: 600; }
+.mm-cat[aria-selected="true"]::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--wf-ink);
+}
+.mm-cat__en { margin-right: 5px; }
+.mm-cat__zh { font-family: var(--wf-sans, inherit); letter-spacing: .04em; }
+.mm-models__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 26px 24px; max-width: 860px; margin: 0 auto; }
+.mm-model { display: block; text-decoration: none; color: inherit; cursor: pointer; }
+.mm-model__media { aspect-ratio: 16 / 10; }
+.mm-model__row { display: flex; align-items: center; gap: 7px; margin-top: 10px; }
+.mm-model__name { font-size: 15px; font-weight: 600; color: var(--wf-ink); letter-spacing: .01em; line-height: 1.25; }
+.mm-model:hover .mm-model__name { color: var(--wf-accent); }
+.mm-model:hover .mm-model__media { border-color: var(--wf-ink); }
+.mm-model__info { margin-top: 5px; display: flex; flex-direction: column; gap: 3px; }
+.mm-model__price { font-family: var(--wf-mono); font-size: 12px; color: var(--wf-ink-2); }
+.mm-model__grade { font-size: 12px; color: var(--wf-ink-3); line-height: 1.45; }
+.mm-badge {
+  font-family: var(--wf-mono); font-size: 10px; letter-spacing: .12em; font-weight: 600;
+  padding: 2px 6px; border-radius: var(--wf-r-sm); line-height: 1.4;
+  background: var(--wf-ink); color: var(--wf-paper); text-transform: uppercase;
+}
+.mm-badge--concept { background: var(--wf-accent); }
+.mm-badge--ev {
+  background: transparent; color: var(--wf-ink-2); border: 1px solid var(--wf-line-strong);
+  letter-spacing: 0; padding: 1px 5px;
+}
+
+/* 連結型 panel（購車／品牌／售後）*/
+.mm-links { display: grid; grid-template-columns: repeat(var(--mm-cols, 4), auto); gap: 22px 52px; width: fit-content; max-width: 100%; margin: 0 auto; justify-items: start; }
+/* 平板：欄數過多會超出面板，收斂為 4 欄並縮小間距 */
+.wf-canvas[data-device="tablet"] .mm-links { grid-template-columns: repeat(4, auto); gap: 20px 36px; }
+.mm-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 15px; color: var(--wf-ink); text-decoration: none; letter-spacing: .04em;
+  padding: 4px 0; white-space: nowrap;
+}
+.mm-link::before { content: "—"; color: var(--wf-ink-3); }
+.mm-link:hover { color: var(--wf-accent); }
+
+/* ---- 手機 drawer ---- */
+.mm-drawer { display: none; }
+.wf-canvas { position: relative; }
+.wf-canvas[data-device="mobile"] .mm { display: none; }
+
+.mm-drawer__scrim {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; min-height: 100%;
+  background: rgba(20, 24, 30, .32);
+  opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 90;
+}
+.mm-drawer__panel {
+  position: absolute; top: 0; left: 0; width: 100%; min-height: 812px;
+  background: var(--wf-stage);
+  opacity: 0; visibility: hidden; transition: opacity .2s ease, visibility .2s ease; z-index: 91;
+  display: flex; flex-direction: column;
+}
+.mm-drawer.is-open .mm-drawer__scrim { opacity: 1; pointer-events: auto; }
+.mm-drawer.is-open .mm-drawer__panel { opacity: 1; visibility: visible; }
+
+/* 手機時顯示 drawer */
+.wf-canvas[data-device="mobile"] .mm-drawer { display: block; }
+
+.mm-drawer__bar {
+  display: flex; align-items: center; gap: 12px;
+  height: 56px; padding: 0 16px; background: var(--wf-paper);
+  border-bottom: 1px solid var(--wf-line); flex: none;
+}
+.mm-drawer__close {
+  width: 34px; height: 34px; flex: none; border: 0; background: none; cursor: pointer;
+  font-size: 20px; line-height: 1; color: var(--wf-ink);
+}
+.mm-drawer__logo { width: 96px; height: 30px; }
+.mm-drawer__spacer { flex: 1; }
+
+.mm-drawer__body { padding: 12px 20px 40px; }
+.mm-acc { border-bottom: 1px solid var(--wf-ink); }
+.mm-acc__head {
+  width: 100%; background: none; border: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 2px; font-size: 16px; font-weight: 700; color: var(--wf-ink); text-align: left;
+}
+.mm-acc__head .chev { font-size: 13px; color: var(--wf-ink-2); transition: transform .2s ease; }
+.mm-acc.is-open .mm-acc__head .chev { transform: rotate(180deg); }
+.mm-acc__body { display: none; padding: 0 2px 22px; }
+.mm-acc.is-open .mm-acc__body { display: block; }
+
+/* drawer 內車款 grid（2 欄）＋ 分類列 */
+.mm-cats--drawer { justify-content: space-between; gap: 0; margin-bottom: 18px; }
+.mm-cats--drawer .mm-cat {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  flex: 1; font-size: 11px; letter-spacing: .08em; padding: 0 2px 10px; white-space: nowrap;
+}
+.mm-cats--drawer .mm-cat__en { margin-right: 0; }
+.mm-cats--drawer .mm-cat__zh { font-size: 11px; }
+.mm-dgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 16px; }
+.mm-dgrid .mm-model__media { aspect-ratio: 16 / 10; }
+.mm-dgrid .mm-model__name { font-size: 14px; line-height: 1.3; word-break: break-word; }
+.mm-dgrid .mm-model__row { margin-top: 6px; align-items: flex-start; }
+.mm-dgrid .mm-model__price { font-size: 11px; }
+.mm-dgrid .mm-model__grade { font-size: 11px; }
+
+/* drawer 內連結（2 欄）*/
+.mm-dlinks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; }
+.mm-dlinks .mm-link { font-size: 14px; white-space: normal; }
+
+.mm-drawer__film { margin-top: 24px; }
